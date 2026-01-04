@@ -4,81 +4,68 @@ import prisma from '../utils/prisma';
 
 export const generateSchedule = async (req: Request, res: Response) => {
     try {
+        const { rounds = 1, daysBetweenMatches = 3 } = req.body;
         const teams = await prisma.team.findMany();
-        if (teams.length !== 4) {
-            res.status(400).json({ message: 'Need exactly 4 teams to generate a schedule' });
+
+        if (teams.length < 2) {
+            res.status(400).json({ message: 'Need at least 2 teams to generate a schedule' });
             return;
         }
 
         // Clear existing matches
         await prisma.match.deleteMany();
 
-        const [tA, tB, tC, tD] = teams;
-
-        // Double Round Robin (Home and Away)
-        // 4 teams = 6 games per round
-        // We will do 4 rounds (24 games total for season) or just 1 set of home/away?
-        // User asked for "4 teams, 6 matchdays per round". 
-        // 4 teams = 2 matches per matchday.
-        // Let's stick to the prompt's specific Round Robin logic
-        // Simple logic:
-        const roundPairings = [
-            { home: tA, away: tB }, { home: tC, away: tD }, // Day 1
-            { home: tA, away: tC }, { home: tB, away: tD }, // Day 2
-            { home: tA, away: tD }, { home: tB, away: tC }, // Day 3
-            // Reverse fixtures
-            { home: tB, away: tA }, { home: tD, away: tC },
-            { home: tC, away: tA }, { home: tD, away: tB },
-            { home: tD, away: tA }, { home: tC, away: tB },
-        ];
-
-        // We really just want 2 matches per "Matchday"
-        // The array above has 12 matches (matches for everyone to play everyone twice)
-        // 12 matches / 2 matches per day = 6 Matchdays. Correct.
-
-        let currentDate = addDays(startOfToday(), 1);
-        const matchesToCreate = [];
-
-        // Matchday 1
-        matchesToCreate.push({ ...roundPairings[0], matchday: 1 });
-        matchesToCreate.push({ ...roundPairings[1], matchday: 1 });
-        // Matchday 2
-        matchesToCreate.push({ ...roundPairings[2], matchday: 2 });
-        matchesToCreate.push({ ...roundPairings[3], matchday: 2 });
-        // Matchday 3
-        matchesToCreate.push({ ...roundPairings[4], matchday: 3 });
-        matchesToCreate.push({ ...roundPairings[5], matchday: 3 });
-        // Matchday 4
-        matchesToCreate.push({ ...roundPairings[6], matchday: 4 });
-        matchesToCreate.push({ ...roundPairings[7], matchday: 4 });
-        // Matchday 5
-        matchesToCreate.push({ ...roundPairings[8], matchday: 5 });
-        matchesToCreate.push({ ...roundPairings[9], matchday: 5 });
-        // Matchday 6
-        matchesToCreate.push({ ...roundPairings[10], matchday: 6 });
-        matchesToCreate.push({ ...roundPairings[11], matchday: 6 });
-
-        // User wanted "4 rounds". This usually means 4 cycles of this. 
-        // Let's generate 4 full cycles (24 matchdays? No, maybe 4 HEAD-TO-HEAD rounds)
-        // Let's just do 2 cycles for a "Season" (Home and Away) = 6 Matchdays total as implemented above.
-        // If user wants more, we can duplicate logic. For now, 6 matchdays is a solid league.
-
-        let dbOps = [];
-        for (const m of matchesToCreate) {
-            dbOps.push(prisma.match.create({
-                data: {
-                    matchday: m.matchday,
-                    round: 1,
-                    date: addDays(currentDate, m.matchday), // Spread them out
-                    status: 'SCHEDULED',
-                    homeTeamId: m.home.id,
-                    awayTeamId: m.away.id
-                }
-            }));
+        // Round Robin Algorithm (Circle Method)
+        let scheduleTeams = [...teams];
+        if (scheduleTeams.length % 2 !== 0) {
+            scheduleTeams.push({ id: 'BYE', name: 'BYE' } as any);
         }
 
-        await prisma.$transaction(dbOps);
-        res.json({ message: 'Schedule generated' });
+        const numTeams = scheduleTeams.length;
+        const numDays = numTeams - 1;
+        const halfSize = numTeams / 2;
+
+        let matchesToCreate = [];
+        let currentDate = addDays(startOfToday(), 1);
+        let matchdayCounter = 1;
+
+        for (let r = 0; r < rounds; r++) {
+            let roundTeams = [...scheduleTeams];
+            for (let day = 0; day < numDays; day++) {
+                for (let i = 0; i < halfSize; i++) {
+                    const home = roundTeams[i];
+                    const away = roundTeams[numTeams - 1 - i];
+
+                    if (home.id !== 'BYE' && away.id !== 'BYE') {
+                        // Alternate home/away each round to be fair
+                        const actualHome = r % 2 === 0 ? home : away;
+                        const actualAway = r % 2 === 0 ? away : home;
+
+                        matchesToCreate.push({
+                            matchday: matchdayCounter,
+                            round: r + 1,
+                            date: addDays(currentDate, (matchdayCounter - 1) * daysBetweenMatches),
+                            status: 'SCHEDULED',
+                            homeTeamId: actualHome.id,
+                            awayTeamId: actualAway.id
+                        });
+                    }
+                }
+                // Rotate teams for next day
+                roundTeams.splice(1, 0, roundTeams.pop()!);
+                matchdayCounter++;
+            }
+        }
+
+        await prisma.match.createMany({
+            data: matchesToCreate
+        });
+
+        res.json({
+            message: `Schedule generated: ${matchesToCreate.length} matches across ${matchdayCounter - 1} matchdays.`,
+            matchCount: matchesToCreate.length,
+            matchdays: matchdayCounter - 1
+        });
 
     } catch (error: any) {
         console.error('Generate Schedule error:', error);

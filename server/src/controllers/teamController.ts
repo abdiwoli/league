@@ -19,11 +19,14 @@ export const createTeam = async (req: Request, res: Response) => {
     }
 
     try {
+        // Limit removed at user request for "Full Control"
+        /*
         const count = await prisma.team.count();
         if (count >= 4) {
             res.status(400).json({ message: 'League is full (max 4 teams)' });
             return;
         }
+        */
 
         const team = await prisma.team.create({
             data: { name, logoUrl }
@@ -44,17 +47,29 @@ export const updateTeam = async (req: Request, res: Response) => {
             data: { name, logoUrl }
         });
         res.json(team);
-    } catch (error) {
-        res.status(500).json({ message: 'Error updating team' });
+    } catch (error: any) {
+        console.error('Update Team error:', error);
+        res.status(500).json({ message: 'Error updating team', error: error.message });
     }
 };
 
 export const deleteTeam = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
+        // Cascade delete matches for this team
+        await prisma.match.deleteMany({
+            where: {
+                OR: [
+                    { homeTeamId: id },
+                    { awayTeamId: id }
+                ]
+            }
+        });
+
         await prisma.team.delete({ where: { id } });
-        res.json({ message: 'Team deleted' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deleting team' });
+        res.json({ message: 'Team and associated matches deleted' });
+    } catch (error: any) {
+        console.error('Delete Team error:', error);
+        res.status(500).json({ message: 'Error deleting team', error: error.message });
     }
 };
