@@ -80,9 +80,9 @@ export const generateSchedule = async (req: Request, res: Response) => {
         await prisma.$transaction(dbOps);
         res.json({ message: 'Schedule generated' });
 
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error generating schedule' });
+    } catch (error: any) {
+        console.error('Generate Schedule error:', error);
+        res.status(500).json({ message: 'Error generating schedule', error: error.message });
     }
 };
 
@@ -93,8 +93,9 @@ export const getMatches = async (req: Request, res: Response) => {
             orderBy: { matchday: 'asc' }
         });
         res.json(matches);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching matches' });
+    } catch (error: any) {
+        console.error('Fetch Matches error:', error);
+        res.status(500).json({ message: 'Error fetching matches', error: error.message });
     }
 };
 
@@ -113,8 +114,9 @@ export const updateResult = async (req: Request, res: Response) => {
             include: { homeTeam: true, awayTeam: true }
         });
         res.json(match);
-    } catch (error) {
-        res.status(500).json({ message: 'Error updating result' });
+    } catch (error: any) {
+        console.error('Update Result error:', error);
+        res.status(500).json({ message: 'Error updating result', error: error.message });
     }
 };
 
