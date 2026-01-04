@@ -11,7 +11,7 @@ export const register = async (req: Request, res: Response) => {
         return;
     }
 
-    email = email.toLowerCase();
+    email = email.trim().toLowerCase();
 
     try {
         const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -29,16 +29,17 @@ export const register = async (req: Request, res: Response) => {
             },
         });
 
+        const secret = process.env.JWT_SECRET || 'fallback_secret_123';
         const token = jwt.sign(
             { id: user.id, role: user.role },
-            process.env.JWT_SECRET as string,
+            secret,
             { expiresIn: '1d' }
         );
 
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: 'lax',
             maxAge: 24 * 60 * 60 * 1000
         });
 
@@ -61,7 +62,7 @@ export const login = async (req: Request, res: Response) => {
         return;
     }
 
-    email = email.toLowerCase();
+    email = email.trim().toLowerCase();
 
     try {
         console.log(`Login attempt for: ${email}`);
@@ -80,16 +81,17 @@ export const login = async (req: Request, res: Response) => {
             return;
         }
 
+        const secret = process.env.JWT_SECRET || 'fallback_secret_123';
         const token = jwt.sign(
             { id: user.id, role: user.role },
-            process.env.JWT_SECRET as string,
+            secret,
             { expiresIn: '1d' }
         );
 
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: 'lax',
             maxAge: 24 * 60 * 60 * 1000
         });
 
