@@ -10,7 +10,7 @@ export const getLeagueTable = async (req: Request, res: Response) => {
             }
         });
 
-        const table = teams.map(team => {
+        const table = teams.map((team: any) => {
             let played = 0, won = 0, drawn = 0, lost = 0, gf = 0, ga = 0, pts = 0;
 
             // Process Home Matches
