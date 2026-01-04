@@ -8,6 +8,13 @@ import authRoutes from './routes/authRoutes';
 
 dotenv.config();
 
+console.log('--- DEBUG INFO ---');
+console.log('DATABASE_URL detected:', !!process.env.DATABASE_URL);
+if (process.env.DATABASE_URL) {
+    console.log('DATABASE_URL starts with:', process.env.DATABASE_URL.substring(0, 10));
+}
+console.log('------------------');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
