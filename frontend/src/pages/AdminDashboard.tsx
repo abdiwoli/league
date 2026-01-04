@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Calendar, Edit2, Image as ImageIcon, Plus, RefreshCw, Save, Trash2, Upload } from 'lucide-react';
+import { Calendar, Edit2, Image as ImageIcon, Plus, RefreshCw, Save, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
 import api, { getImageUrl } from '../lib/api';
 
@@ -22,32 +22,47 @@ export const AdminDashboard: React.FC = () => {
     // Mutations
     const uploadLogo = useMutation({
         mutationFn: async (file: File) => {
+            console.log('[DEBUG] Uploading logo...', file.name);
             const formData = new FormData();
             formData.append('logo', file);
             const { data } = await api.post('/teams/upload-logo', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
+            console.log('[DEBUG] Logo uploaded:', data.url);
             return data.url;
-        }
+        },
+        onError: (err: any) => console.error('[DEBUG] Logo upload failed:', err)
     });
 
     const createTeam = useMutation({
-        mutationFn: async (data: { name: string, logoUrl?: string }) => api.post('/teams', data),
+        mutationFn: async (data: { name: string, logoUrl?: string }) => {
+            console.log('[DEBUG] Sending createTeam request:', data);
+            return api.post('/teams', data);
+        },
         onSuccess: () => {
+            console.log('[DEBUG] Team created successfully');
             queryClient.invalidateQueries({ queryKey: ['teams'] });
             setNewTeam('');
             setSelectedFile(null);
             setLogoPreview(null);
+        },
+        onError: (err: any) => {
+            console.error('[DEBUG] Team creation failed:', err);
+            alert('Failed to create team: ' + (err.response?.data?.message || err.message));
         }
     });
 
     const handleCreateTeam = async () => {
         if (!newTeam) return;
-        let logoUrl = '';
-        if (selectedFile) {
-            logoUrl = await uploadLogo.mutateAsync(selectedFile);
+        try {
+            let logoUrl = '';
+            if (selectedFile) {
+                logoUrl = await uploadLogo.mutateAsync(selectedFile);
+            }
+            createTeam.mutate({ name: newTeam, logoUrl });
+        } catch (error) {
+            console.error('[DEBUG] handleCreateTeam error:', error);
         }
-        createTeam.mutate({ name: newTeam, logoUrl });
     };
 
     const deleteTeam = useMutation({
@@ -79,6 +94,15 @@ export const AdminDashboard: React.FC = () => {
     const clearLeague = useMutation({
         mutationFn: () => api.delete('/matches'),
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['matches'] });
+            queryClient.invalidateQueries({ queryKey: ['league-table'] });
+        }
+    });
+
+    const deleteAllTeams = useMutation({
+        mutationFn: () => api.delete('/teams'),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['teams'] });
             queryClient.invalidateQueries({ queryKey: ['matches'] });
             queryClient.invalidateQueries({ queryKey: ['league-table'] });
         }
@@ -197,19 +221,32 @@ export const AdminDashboard: React.FC = () => {
                         </h2>
 
                         <div className="space-y-4">
-                            {/* Logo Upload Placeholder */}
-                            <div className="group relative w-32 h-32 mx-auto mb-6">
-                                <div className="w-full h-full rounded-3xl bg-gray-50 border-4 border-dashed border-gray-100 flex items-center justify-center overflow-hidden transition-all group-hover:border-primary-200">
-                                    {logoPreview ? (
-                                        <img src={logoPreview} alt="Preview" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <ImageIcon size={32} className="text-gray-300" />
-                                    )}
-                                </div>
-                                <label className="absolute inset-0 cursor-pointer flex items-center justify-center bg-black/0 hover:bg-black/20 rounded-3xl transition-all opacity-0 hover:opacity-100">
+                            {/* Simplified Logo Upload */}
+                            <div className="flex items-center gap-3 mb-4">
+                                <label className="flex-1 cursor-pointer flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 border-2 border-dashed border-gray-100 rounded-2xl hover:border-primary-200 text-gray-500 hover:text-primary-600 transition-all font-bold text-sm">
                                     <input type="file" className="hidden" onChange={handleFileChange} accept="image/*" />
-                                    <Upload size={24} className="text-white" />
+                                    {selectedFile ? (
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded-md bg-white border border-gray-100 overflow-hidden">
+                                                <img src={logoPreview!} className="w-full h-full object-cover" />
+                                            </div>
+                                            <span className="truncate max-w-[100px]">{selectedFile.name}</span>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <ImageIcon size={18} />
+                                            <span>Add Logo</span>
+                                        </>
+                                    )}
                                 </label>
+                                {selectedFile && (
+                                    <button
+                                        onClick={() => { setSelectedFile(null); setLogoPreview(null); }}
+                                        className="p-3 text-red-400 hover:text-red-600"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                )}
                             </div>
 
                             <input
@@ -217,20 +254,39 @@ export const AdminDashboard: React.FC = () => {
                                 onChange={e => setNewTeam(e.target.value)}
                                 placeholder="Team Name"
                                 className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all font-bold text-gray-800"
+                                onKeyDown={e => e.key === 'Enter' && handleCreateTeam()}
                             />
 
                             <button
                                 onClick={handleCreateTeam}
                                 disabled={!newTeam || createTeam.isPending || uploadLogo.isPending}
-                                className="w-full py-4 bg-primary-600 text-white rounded-2xl font-black hover:bg-primary-700 transition-all shadow-xl shadow-primary-500/20 disabled:opacity-50 flex items-center justify-center"
+                                className="w-full py-4 bg-primary-600 text-white rounded-2xl font-black hover:bg-primary-700 transition-all shadow-xl shadow-primary-500/20 disabled:opacity-50 flex items-center justify-center gap-2"
                             >
-                                {createTeam.isPending || uploadLogo.isPending ? 'Working...' : 'Register Team'}
+                                {createTeam.isPending || uploadLogo.isPending ? (
+                                    <>
+                                        <RefreshCw size={18} className="animate-spin" />
+                                        <span>Saving...</span>
+                                    </>
+                                ) : (
+                                    <span>Register Team</span>
+                                )}
                             </button>
                         </div>
                     </section>
 
                     <section className="glass p-6 rounded-[2.5rem] border-2 border-white shadow-2xl shadow-gray-200/40">
-                        <h2 className="text-xl font-black text-gray-800 mb-6">Registry</h2>
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-black text-gray-800">Registry</h2>
+                            {teams && teams.length > 0 && (
+                                <button
+                                    onClick={() => { if (confirm('Delete ALL teams? This will clear everything!')) deleteAllTeams.mutate(); }}
+                                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                    title="Reset All Teams"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            )}
+                        </div>
                         <div className="space-y-3">
                             {teams?.map((t: any) => (
                                 <div key={t.id} className="flex flex-col p-4 bg-white/50 rounded-2xl border border-gray-50 hover:border-primary-100 transition-all group">

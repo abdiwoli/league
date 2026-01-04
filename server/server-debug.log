@@ -1,0 +1,12 @@
+[2026-01-04T22:09:41.655Z] Fetching teams...
+[2026-01-04T22:09:45.729Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.

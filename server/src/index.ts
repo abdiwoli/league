@@ -44,6 +44,15 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+// Global Request Logger
+app.use((req, res, next) => {
+    try {
+        const logMsg = `[${new Date().toISOString()}] ${req.method} ${req.url}\n`;
+        require('fs').appendFileSync('global-debug.log', logMsg);
+    } catch (e) { }
+    next();
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api', apiRoutes);
 app.use('/uploads', express.static('uploads'));

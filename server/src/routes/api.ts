@@ -13,6 +13,7 @@ router.get('/teams', TeamController.getTeams);
 router.post('/teams', authenticate, requireAdmin, TeamController.createTeam);
 router.put('/teams/:id', authenticate, requireAdmin, TeamController.updateTeam);
 router.delete('/teams/:id', authenticate, requireAdmin, TeamController.deleteTeam);
+router.delete('/teams', authenticate, requireAdmin, TeamController.deleteAllTeams);
 router.post('/teams/upload-logo', authenticate, requireAdmin, upload.single('logo'), (req, res) => {
     if (!req.file) {
         res.status(400).json({ message: 'No file uploaded' });
