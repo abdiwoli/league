@@ -14,7 +14,7 @@ export const getLeagueTable = async (req: Request, res: Response) => {
             let played = 0, won = 0, drawn = 0, lost = 0, gf = 0, ga = 0, pts = 0;
 
             // Process Home Matches
-            team.matchesHome.forEach(m => {
+            team.matchesHome.forEach((m: any) => {
                 played++;
                 if (m.homeScore !== null && m.awayScore !== null) {
                     gf += m.homeScore;
@@ -26,7 +26,7 @@ export const getLeagueTable = async (req: Request, res: Response) => {
             });
 
             // Process Away Matches
-            team.matchesAway.forEach(m => {
+            team.matchesAway.forEach((m: any) => {
                 played++;
                 if (m.homeScore !== null && m.awayScore !== null) {
                     gf += m.awayScore; // Note: For away team, GF is awayScore
@@ -48,7 +48,7 @@ export const getLeagueTable = async (req: Request, res: Response) => {
         });
 
         // Sort: Points -> GD -> GF
-        table.sort((a, b) => {
+        table.sort((a: any, b: any) => {
             if (b.pts !== a.pts) return b.pts - a.pts;
             if (b.gd !== a.gd) return b.gd - a.gd;
             return b.gf - a.gf;
