@@ -27,7 +27,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(helmet());
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 
 const rawClientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
 const clientUrl = rawClientUrl.trim().replace(/\/$/, '');
