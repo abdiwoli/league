@@ -29,7 +29,13 @@ app.use((req, res, next) => {
 
 app.use(helmet());
 
-const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, '') : 'http://localhost:5173';
+const rawClientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+const clientUrl = rawClientUrl.trim().replace(/\/$/, '');
+
+console.log('--- CORS CONFIG ---');
+console.log('Raw CLIENT_URL:', rawClientUrl);
+console.log('Sanitized Origin:', clientUrl);
+console.log('-------------------');
 
 app.use(cors({
     origin: clientUrl,
