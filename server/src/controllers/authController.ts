@@ -4,12 +4,14 @@ import jwt from 'jsonwebtoken';
 import prisma from '../utils/prisma';
 
 export const register = async (req: Request, res: Response) => {
-    const { email, password, role } = req.body;
+    let { email, password, role } = req.body;
 
     if (!email || !password) {
         res.status(400).json({ message: 'Email and password required' });
         return;
     }
+
+    email = email.toLowerCase();
 
     try {
         const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -23,7 +25,7 @@ export const register = async (req: Request, res: Response) => {
             data: {
                 email,
                 password: hashedPassword,
-                role: role || 'VIEWER', // Default to viewer
+                role: role || 'VIEWER',
             },
         });
 
@@ -37,7 +39,7 @@ export const register = async (req: Request, res: Response) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 24 * 60 * 60 * 1000 // 1 day
+            maxAge: 24 * 60 * 60 * 1000
         });
 
         res.status(201).json({ message: 'User created', userId: user.id, role: user.role });
@@ -48,18 +50,29 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+
+    if (!email || !password) {
+        res.status(400).json({ message: 'Missing fields' });
+        return;
+    }
+
+    email = email.toLowerCase();
 
     try {
+        console.log(`Login attempt for: ${email}`);
         const user = await prisma.user.findUnique({ where: { email } });
+
         if (!user) {
-            res.status(400).json({ message: 'Invalid credentials' });
+            console.log('Login failed: User not found');
+            res.status(400).json({ message: 'Invalid credentials (User not found)' });
             return;
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            res.status(400).json({ message: 'Invalid credentials' });
+            console.log('Login failed: Password mismatch');
+            res.status(400).json({ message: 'Invalid credentials (Password mismatch)' });
             return;
         }
 
@@ -73,7 +86,7 @@ export const login = async (req: Request, res: Response) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 24 * 60 * 60 * 1000 // 1 day
+            maxAge: 24 * 60 * 60 * 1000
         });
 
         res.json({ message: 'Login successful', role: user.role });
