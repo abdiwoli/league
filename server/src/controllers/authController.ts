@@ -43,7 +43,10 @@ export const register = async (req: Request, res: Response) => {
             maxAge: 24 * 60 * 60 * 1000
         });
 
-        res.status(201).json({ message: 'User created', userId: user.id, role: user.role });
+        res.status(201).json({
+            message: 'User created',
+            user: { id: user.id, email: user.email, role: user.role }
+        });
     } catch (error: any) {
         console.error('Register error details:', error);
         res.status(500).json({
@@ -95,7 +98,10 @@ export const login = async (req: Request, res: Response) => {
             maxAge: 24 * 60 * 60 * 1000
         });
 
-        res.json({ message: 'Login successful', role: user.role });
+        res.json({
+            message: 'Login successful',
+            user: { id: user.id, email: user.email, role: user.role }
+        });
     } catch (error: any) {
         console.error('Login error details:', error);
         res.status(500).json({

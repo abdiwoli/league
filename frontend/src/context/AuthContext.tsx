@@ -36,15 +36,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const loginMutation = useMutation({
         mutationFn: (creds: any) => api.post('/auth/login', creds),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['auth'] });
+        onSuccess: (response) => {
+            queryClient.setQueryData(['auth', 'me'], response.data.user);
         },
     });
 
     const registerMutation = useMutation({
         mutationFn: (data: any) => api.post('/auth/register', data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['auth'] });
+        onSuccess: (response) => {
+            queryClient.setQueryData(['auth', 'me'], response.data.user);
         },
     });
 
