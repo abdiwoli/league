@@ -1,15 +1,16 @@
-import { Loader2, Lock, Mail } from 'lucide-react';
+import { Loader2, Lock, Mail, User } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export const Login: React.FC = () => {
+export const Register: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState('ADMIN'); // Default to ADMIN for the first user
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { login } = useAuth();
+    const { register } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -18,10 +19,10 @@ export const Login: React.FC = () => {
         setError('');
 
         try {
-            await login({ email, password });
+            await register({ email, password, role });
             navigate('/admin');
         } catch (err: any) {
-            setError(err?.response?.data?.message || 'Failed to login');
+            setError(err?.response?.data?.message || 'Failed to register');
         } finally {
             setIsSubmitting(false);
         }
@@ -31,8 +32,8 @@ export const Login: React.FC = () => {
         <div className="min-h-[80vh] flex items-center justify-center">
             <div className="glass p-8 rounded-2xl w-full max-w-md animate-fade-in-up">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400">Welcome Back</h1>
-                    <p className="text-gray-500 mt-2">Sign in to manage the league</p>
+                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400">Create Account</h1>
+                    <p className="text-gray-500 mt-2">Join to manage the football league</p>
                 </div>
 
                 {error && (
@@ -52,7 +53,7 @@ export const Login: React.FC = () => {
                                 value={email}
                                 onChange={e => setEmail(e.target.value)}
                                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all"
-                                placeholder="admin@league.com"
+                                placeholder="your@email.com"
                             />
                         </div>
                     </div>
@@ -72,16 +73,32 @@ export const Login: React.FC = () => {
                         </div>
                     </div>
 
+                    <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700 ml-1">Role</label>
+                        <div className="relative">
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <select
+                                value={role}
+                                onChange={e => setRole(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all bg-white"
+                            >
+                                <option value="ADMIN">Admin</option>
+                                <option value="VIEWER">Viewer</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <button
                         type="submit"
                         disabled={isSubmitting}
                         className="w-full bg-gradient-to-r from-primary-600 to-primary-500 text-white font-semibold py-3 rounded-xl hover:shadow-lg hover:shadow-primary-500/30 active:scale-[0.98] transition-all disabled:opacity-70 flex justify-center items-center"
                     >
-                        {isSubmitting ? <Loader2 className="animate-spin" /> : 'Sign In'}
+                        {isSubmitting ? <Loader2 className="animate-spin" /> : 'Register'}
                     </button>
+
                     <div className="text-center mt-4">
-                        <span className="text-sm text-gray-500">Don't have an account? </span>
-                        <Link to="/register" className="text-sm text-primary-600 font-semibold hover:underline">Register</Link>
+                        <span className="text-sm text-gray-500">Already have an account? </span>
+                        <Link to="/login" className="text-sm text-primary-600 font-semibold hover:underline">Sign In</Link>
                     </div>
                 </form>
             </div>
