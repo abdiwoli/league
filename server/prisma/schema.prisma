@@ -8,10 +8,11 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  password String
-  role     String // 'ADMIN' | 'VIEWER'
+  id        String  @id @default(uuid())
+  email     String  @unique
+  password  String
+  role      String  // 'ADMIN' | 'VIEWER'
+  isBlocked Boolean @default(false)
 }
 
 model Team {

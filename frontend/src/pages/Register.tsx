@@ -1,4 +1,4 @@
-import { Loader2, Lock, Mail, User } from 'lucide-react';
+import { Loader2, Lock, Mail } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 export const Register: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('ADMIN'); // Default to ADMIN for the first user
+    // const [role, setRole] = useState('VIEWER'); // Removed as all users start as VIEWERS
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -19,8 +19,8 @@ export const Register: React.FC = () => {
         setError('');
 
         try {
-            await register({ email, password, role });
-            navigate('/admin');
+            await register({ email, password });
+            navigate('/');
         } catch (err: any) {
             setError(err?.response?.data?.message || 'Failed to register');
         } finally {
@@ -73,20 +73,7 @@ export const Register: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="space-y-1">
-                        <label className="text-sm font-medium text-gray-700 ml-1">Role</label>
-                        <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <select
-                                value={role}
-                                onChange={e => setRole(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all bg-white"
-                            >
-                                <option value="ADMIN">Admin</option>
-                                <option value="VIEWER">Viewer</option>
-                            </select>
-                        </div>
-                    </div>
+
 
                     <button
                         type="submit"

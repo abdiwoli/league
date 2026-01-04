@@ -1,4 +1,4 @@
-import { Calendar, LayoutDashboard, LogOut, Shield, Table2 } from 'lucide-react';
+import { Calendar, LayoutDashboard, LogOut, Settings, Shield, Table2, Users } from 'lucide-react';
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -33,7 +33,13 @@ export const Layout: React.FC = () => {
                     <NavItem to="/" icon={<Table2 />} label="League Table" active={isActive('/')} />
                     <NavItem to="/matches" icon={<Calendar />} label="Matches" active={isActive('/matches')} />
                     {user?.role === 'ADMIN' && (
-                        <NavItem to="/admin" icon={<LayoutDashboard />} label="Dashboard" active={isActive('/admin')} />
+                        <>
+                            <NavItem to="/admin" icon={<LayoutDashboard />} label="Dashboard" active={isActive('/admin')} />
+                            <NavItem to="/users" icon={<Users />} label="User Management" active={isActive('/users')} />
+                        </>
+                    )}
+                    {user && (
+                        <NavItem to="/profile" icon={<Settings />} label="Settings" active={isActive('/profile')} />
                     )}
                 </nav>
 
@@ -61,7 +67,13 @@ export const Layout: React.FC = () => {
                 <MobileNavItem to="/" icon={<Table2 />} label="Table" active={isActive('/')} />
                 <MobileNavItem to="/matches" icon={<Calendar />} label="Matches" active={isActive('/matches')} />
                 {user?.role === 'ADMIN' && (
-                    <MobileNavItem to="/admin" icon={<LayoutDashboard />} label="Admin" active={isActive('/admin')} />
+                    <>
+                        <MobileNavItem to="/admin" icon={<LayoutDashboard />} label="Admin" active={isActive('/admin')} />
+                        <MobileNavItem to="/users" icon={<Users />} label="Users" active={isActive('/users')} />
+                    </>
+                )}
+                {user && (
+                    <MobileNavItem to="/profile" icon={<Settings />} label="Settings" active={isActive('/profile')} />
                 )}
             </nav>
 

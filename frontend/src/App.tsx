@@ -6,7 +6,9 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { LeagueTable } from './pages/LeagueTable';
 import { Login } from './pages/Login';
 import { MatchList } from './pages/MatchList';
+import { ProfileSettings } from './pages/ProfileSettings';
 import { Register } from './pages/Register';
+import { UserManagement } from './pages/UserManagement';
 
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isLoading } = useAuth();
@@ -28,6 +30,12 @@ const App: React.FC = () => {
             <AdminDashboard />
           </AdminRoute>
         } />
+        <Route path="users" element={
+          <AdminRoute>
+            <UserManagement />
+          </AdminRoute>
+        } />
+        <Route path="profile" element={<ProfileSettings />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Route>
     </Routes>
