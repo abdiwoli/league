@@ -55,8 +55,12 @@ export const getLeagueTable = async (req: Request, res: Response) => {
         });
 
         res.json(table);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error fetching table' });
+    } catch (error: any) {
+        console.error('Table error details:', error);
+        res.status(500).json({
+            message: 'Error fetching table',
+            error: error.message,
+            code: error.code
+        });
     }
 };

@@ -43,9 +43,13 @@ export const register = async (req: Request, res: Response) => {
         });
 
         res.status(201).json({ message: 'User created', userId: user.id, role: user.role });
-    } catch (error) {
-        console.error('Register error:', error);
-        res.status(500).json({ message: 'Server error' });
+    } catch (error: any) {
+        console.error('Register error details:', error);
+        res.status(500).json({
+            message: 'Server error during registration',
+            error: error.message,
+            code: error.code
+        });
     }
 };
 
@@ -90,9 +94,13 @@ export const login = async (req: Request, res: Response) => {
         });
 
         res.json({ message: 'Login successful', role: user.role });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ message: 'Server error' });
+    } catch (error: any) {
+        console.error('Login error details:', error);
+        res.status(500).json({
+            message: 'Server error during login',
+            error: error.message,
+            code: error.code
+        });
     }
 };
 
