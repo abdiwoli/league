@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { Trophy } from 'lucide-react';
 import React from 'react';
-import api from '../lib/api';
+import api, { getImageUrl } from '../lib/api';
 
 export const LeagueTable: React.FC = () => {
     const { data: table, isLoading } = useQuery({
@@ -58,13 +58,13 @@ export const LeagueTable: React.FC = () => {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center">
                                             {team.logoUrl ? (
-                                                <img src={team.logoUrl} className="w-8 h-8 rounded-full object-cover mr-3 bg-gray-100" />
+                                                <img src={getImageUrl(team.logoUrl)!} className="w-8 h-8 rounded-full object-cover mr-3 bg-gray-100 border border-gray-100" />
                                             ) : (
-                                                <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-bold mr-3 text-xs">
+                                                <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-black mr-3 text-[10px]">
                                                     {team.name.substring(0, 2).toUpperCase()}
                                                 </div>
                                             )}
-                                            <span className="font-semibold text-gray-900">{team.name}</span>
+                                            <span className="font-bold text-gray-900">{team.name}</span>
                                             {idx === 0 && <Trophy size={14} className="ml-2 text-yellow-500" />}
                                         </div>
                                     </td>

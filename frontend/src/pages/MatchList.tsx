@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { format, parseISO } from 'date-fns';
 import { Calendar, CheckCircle } from 'lucide-react';
 import React from 'react';
-import api from '../lib/api';
+import api, { getImageUrl } from '../lib/api';
 
 export const MatchList: React.FC = () => {
     const { data: matches, isLoading } = useQuery({
@@ -48,27 +48,41 @@ export const MatchList: React.FC = () => {
                         </div>
                         <div className="divide-y divide-gray-50">
                             {dayMatches.map((match: any) => (
-                                <div key={match.id} className="p-4 flex items-center justify-between">
-                                    <div className="flex-1 text-right pr-4">
-                                        <span className={clsx("font-semibold", match.homeScore > match.awayScore ? "text-gray-900" : "text-gray-600")}>
+                                <div key={match.id} className="p-4 flex items-center justify-between gap-4">
+                                    <div className="flex-1 flex items-center justify-end gap-3 min-w-0">
+                                        <span className={clsx("font-bold truncate text-sm", match.homeScore > match.awayScore ? "text-gray-900" : "text-gray-600")}>
                                             {match.homeTeam.name}
                                         </span>
+                                        <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center p-1.5 border border-gray-100 flex-shrink-0">
+                                            {match.homeTeam.logoUrl ? (
+                                                <img src={getImageUrl(match.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
+                                            ) : (
+                                                <div className="text-[10px] font-black text-gray-300">T</div>
+                                            )}
+                                        </div>
                                     </div>
 
-                                    <div className="flex flex-col items-center min-w-[3rem]">
+                                    <div className="flex flex-col items-center min-w-[3.5rem]">
                                         {match.status === 'PLAYED' ? (
-                                            <div className="bg-gray-100 px-3 py-1 rounded text-sm font-bold text-gray-800">
+                                            <div className="bg-gray-900 px-3 py-1.5 rounded-xl text-sm font-black text-white shadow-sm">
                                                 {match.homeScore} - {match.awayScore}
                                             </div>
                                         ) : (
-                                            <div className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded">
+                                            <div className="text-[10px] font-black text-gray-400 bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200">
                                                 VS
                                             </div>
                                         )}
                                     </div>
 
-                                    <div className="flex-1 text-left pl-4">
-                                        <span className={clsx("font-semibold", match.awayScore > match.homeScore ? "text-gray-900" : "text-gray-600")}>
+                                    <div className="flex-1 flex items-center justify-start gap-3 min-w-0">
+                                        <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center p-1.5 border border-gray-100 flex-shrink-0">
+                                            {match.awayTeam.logoUrl ? (
+                                                <img src={getImageUrl(match.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
+                                            ) : (
+                                                <div className="text-[10px] font-black text-gray-300">T</div>
+                                            )}
+                                        </div>
+                                        <span className={clsx("font-bold truncate text-sm", match.awayScore > match.homeScore ? "text-gray-900" : "text-gray-600")}>
                                             {match.awayTeam.name}
                                         </span>
                                     </div>

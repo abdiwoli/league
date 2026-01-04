@@ -8,4 +8,11 @@ const api = axios.create({
     },
 });
 
+export const getImageUrl = (url: string | null) => {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    const base = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+    return `${base}${url}`;
+};
+
 export default api;
