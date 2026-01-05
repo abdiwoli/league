@@ -113,25 +113,25 @@ export const MatchList: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                             <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Rounds & Gaps</label>
-                            <div className="flex items-center gap-3">
-                                <div className="flex-1 flex items-center bg-gray-50 rounded-2xl border-2 border-gray-50 px-4 py-3.5">
-                                    <span className="text-sm font-bold text-gray-400 mr-3">Rounds</span>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="flex flex-col gap-2 p-4 bg-gray-50 rounded-2xl border-2 border-gray-50 focus-within:border-primary-500 transition-all">
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Rounds</span>
                                     <input
                                         type="number" min="1" max="10"
                                         value={rounds}
                                         onChange={e => setRounds(parseInt(e.target.value) || 1)}
-                                        className="w-full bg-transparent font-black text-gray-800 outline-none"
+                                        className="w-full bg-transparent font-black text-gray-800 outline-none text-xl"
                                     />
                                 </div>
-                                <div className="flex-1 flex items-center bg-gray-50 rounded-2xl border-2 border-gray-50 px-4 py-3.5">
-                                    <span className="text-sm font-bold text-gray-400 mr-3">Gaps (Days)</span>
+                                <div className="flex flex-col gap-2 p-4 bg-gray-50 rounded-2xl border-2 border-gray-50 focus-within:border-primary-500 transition-all">
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Gaps (Days)</span>
                                     <input
                                         type="number" min="1" max="14"
                                         value={gapDays}
                                         onChange={e => setGapDays(parseInt(e.target.value) || 1)}
-                                        className="w-full bg-transparent font-black text-gray-800 outline-none"
+                                        className="w-full bg-transparent font-black text-gray-800 outline-none text-xl"
                                     />
                                 </div>
                             </div>
@@ -241,15 +241,15 @@ export const MatchList: React.FC = () => {
                                             <div key={m.id} className="bg-white border-2 border-gray-50 p-6 rounded-[2rem] hover:border-primary-200 transition-all group hover:shadow-lg">
                                                 <div className="flex items-center justify-between gap-4">
                                                     {/* Home Team */}
-                                                    <div className="flex-1 flex flex-col items-center gap-2 overflow-hidden">
-                                                        <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center p-2.5 border border-gray-100 overflow-hidden shadow-inner">
+                                                    <div className="flex-1 flex flex-col items-center gap-3 overflow-hidden">
+                                                        <div className="w-20 h-20 rounded-[2rem] bg-gray-50 flex items-center justify-center p-3 border-2 border-gray-100 overflow-hidden shadow-inner group-hover:border-primary-100 transition-all">
                                                             {m.homeTeam.logoUrl ? (
                                                                 <img src={getImageUrl(m.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
                                                             ) : (
-                                                                <div className="text-[10px] font-black text-gray-300">T</div>
+                                                                <div className="text-xl font-black text-gray-300">T</div>
                                                             )}
                                                         </div>
-                                                        <span className="text-xs font-black text-gray-700 uppercase tracking-tight truncate w-full text-center">{m.homeTeam.name}</span>
+                                                        <span className="text-sm font-black text-gray-700 uppercase tracking-tight truncate w-full text-center">{m.homeTeam.name}</span>
                                                     </div>
 
                                                     {/* Score or VS */}
@@ -271,15 +271,15 @@ export const MatchList: React.FC = () => {
                                                     </div>
 
                                                     {/* Away Team */}
-                                                    <div className="flex-1 flex flex-col items-center gap-2 overflow-hidden">
-                                                        <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center p-2.5 border border-gray-100 overflow-hidden shadow-inner">
+                                                    <div className="flex-1 flex flex-col items-center gap-3 overflow-hidden">
+                                                        <div className="w-20 h-20 rounded-[2rem] bg-gray-50 flex items-center justify-center p-3 border-2 border-gray-100 overflow-hidden shadow-inner group-hover:border-primary-100 transition-all">
                                                             {m.awayTeam.logoUrl ? (
                                                                 <img src={getImageUrl(m.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
                                                             ) : (
-                                                                <div className="text-[10px] font-black text-gray-300">T</div>
+                                                                <div className="text-xl font-black text-gray-300">T</div>
                                                             )}
                                                         </div>
-                                                        <span className="text-xs font-black text-gray-700 uppercase tracking-tight truncate w-full text-center">{m.awayTeam.name}</span>
+                                                        <span className="text-sm font-black text-gray-700 uppercase tracking-tight truncate w-full text-center">{m.awayTeam.name}</span>
                                                     </div>
                                                 </div>
                                             </div>
