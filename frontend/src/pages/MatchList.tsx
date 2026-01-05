@@ -1,11 +1,16 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { format, parseISO } from 'date-fns';
-import { Calendar, CheckCircle } from 'lucide-react';
-import React from 'react';
+import { addDays, format, parseISO, startOfToday } from 'date-fns';
+import { Calendar, CheckCircle, Clock, Info, RefreshCw, Settings2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import api, { getImageUrl } from '../lib/api';
 
 export const MatchList: React.FC = () => {
+    const { user } = useAuth();
+    const isAdmin = user?.role === 'ADMIN';
+    const queryClient = useQueryClient();
+
     const { data: matches, isLoading } = useQuery({
         queryKey: ['matches'],
         queryFn: async () => {
@@ -14,95 +19,260 @@ export const MatchList: React.FC = () => {
         }
     });
 
-    if (isLoading) return <div className="text-center p-8 text-gray-500">Loading matches...</div>;
+    // Scheduling Form State
+    const [showAdminControls, setShowAdminControls] = useState(false);
+    const [rounds, setRounds] = useState(1);
+    const [gapDays, setGapDays] = useState(3);
+    const [startDate, setStartDate] = useState(format(addDays(startOfToday(), 1), 'yyyy-MM-dd'));
+    const [offDays, setOffDays] = useState<number[]>([]); // 0=Sun, 6=Sat
 
-    // Group by Matchday or Date? Matches are strictly "Matchday X".
-    // Let's group by Round then Matchday.
-
-    // Actually, simpler: Group by Matchday.
-    const groupedMatches: Record<string, any[]> = {};
-    matches?.forEach((m: any) => {
-        const key = `Matchday ${m.matchday}`;
-        if (!groupedMatches[key]) groupedMatches[key] = [];
-        groupedMatches[key].push(m);
+    const generateSchedule = useMutation({
+        mutationFn: async () => {
+            return api.post('/matches/schedule', {
+                rounds,
+                daysBetweenMatches: gapDays,
+                startDate,
+                offDays
+            });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['matches'] });
+            queryClient.invalidateQueries({ queryKey: ['league-table'] });
+            setShowAdminControls(false);
+            alert('Schedule generated successfully!');
+        },
+        onError: (err: any) => {
+            alert('Generation failed: ' + (err.response?.data?.message || err.message));
+        }
     });
 
+    const toggleOffDay = (day: number) => {
+        setOffDays(prev => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]);
+    };
+
+    if (isLoading) return (
+        <div className="flex flex-col items-center justify-center h-96 space-y-4">
+            <RefreshCw className="animate-spin text-primary-500" size={32} />
+            <p className="text-gray-500 font-medium">Preparing the pitch...</p>
+        </div>
+    );
+
+    // Grouping Logic: Round -> Date
+    const roundsMap: Record<number, Record<string, any[]>> = {};
+    matches?.forEach((m: any) => {
+        if (!roundsMap[m.round]) roundsMap[m.round] = {};
+        const dateKey = format(parseISO(m.date), 'yyyy-MM-dd');
+        if (!roundsMap[m.round][dateKey]) roundsMap[m.round][dateKey] = [];
+        roundsMap[m.round][dateKey].push(m);
+    });
+
+    const sortedRounds = Object.keys(roundsMap).map(Number).sort((a, b) => a - b);
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
     return (
-        <div className="space-y-8">
-            <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-gray-900">Match Schedule</h1>
-                <div className="bg-white px-4 py-2 rounded-lg border border-gray-100 shadow-sm text-sm text-gray-500">
-                    <Calendar size={16} className="inline mr-2 mb-0.5" />
-                    Season 2026
+        <div className="space-y-10 pb-20 max-w-5xl mx-auto">
+            {/* Header & Admin Trigger */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-100 pb-8">
+                <div>
+                    <h1 className="text-4xl font-black text-gray-900 tracking-tight">Match <span className="text-primary-600">Schedule</span></h1>
+                    <p className="text-gray-500 mt-2 font-medium">Official fixtures and results for Season 2026.</p>
                 </div>
+
+                {isAdmin && (
+                    <button
+                        onClick={() => setShowAdminControls(!showAdminControls)}
+                        className={clsx(
+                            "flex items-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all shadow-lg active:scale-95",
+                            showAdminControls ? "bg-gray-100 text-gray-600" : "bg-gray-900 text-white hover:bg-black"
+                        )}
+                    >
+                        <Settings2 size={18} />
+                        {showAdminControls ? 'Close Config' : 'Generate Schedule'}
+                    </button>
+                )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {Object.entries(groupedMatches).map(([day, dayMatches]) => (
-                    <div key={day} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                        <div className="bg-gray-50/50 px-4 py-3 border-b border-gray-100 flex justify-between items-center">
-                            <span className="font-semibold text-gray-700">{day}</span>
-                            <span className="text-xs text-gray-400 font-medium">
-                                {dayMatches[0].date && format(parseISO(dayMatches[0].date), 'EEE, MMM d')}
-                            </span>
+            {/* Admin Scheduling Panel */}
+            {isAdmin && showAdminControls && (
+                <div className="glass p-8 rounded-[2.5rem] border-2 border-primary-100 shadow-2xl shadow-primary-500/5 animate-in slide-in-from-top-4 duration-300">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Sequence Start</label>
+                            <div className="relative">
+                                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-primary-500" size={18} />
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={e => setStartDate(e.target.value)}
+                                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:bg-white focus:border-primary-500 outline-none font-bold text-gray-800 transition-all"
+                                />
+                            </div>
                         </div>
-                        <div className="divide-y divide-gray-50">
-                            {dayMatches.map((match: any) => (
-                                <div key={match.id} className="p-4 flex items-center justify-between gap-4">
-                                    <div className="flex-1 flex items-center justify-end gap-3 min-w-0">
-                                        <span className={clsx("font-bold truncate text-sm", match.homeScore > match.awayScore ? "text-gray-900" : "text-gray-600")}>
-                                            {match.homeTeam.name}
-                                        </span>
-                                        <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center p-1.5 border border-gray-100 flex-shrink-0">
-                                            {match.homeTeam.logoUrl ? (
-                                                <img src={getImageUrl(match.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
-                                            ) : (
-                                                <div className="text-[10px] font-black text-gray-300">T</div>
-                                            )}
-                                        </div>
-                                    </div>
 
-                                    <div className="flex flex-col items-center min-w-[3.5rem]">
-                                        {match.status === 'PLAYED' ? (
-                                            <div className="bg-gray-900 px-3 py-1.5 rounded-xl text-sm font-black text-white shadow-sm">
-                                                {match.homeScore} - {match.awayScore}
-                                            </div>
-                                        ) : (
-                                            <div className="text-[10px] font-black text-gray-400 bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200">
-                                                VS
-                                            </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Rounds & Gaps</label>
+                            <div className="flex items-center gap-3">
+                                <div className="flex-1 flex items-center bg-gray-50 rounded-2xl border-2 border-gray-50 px-4 py-3.5">
+                                    <span className="text-sm font-bold text-gray-400 mr-3">Rounds</span>
+                                    <input
+                                        type="number" min="1" max="10"
+                                        value={rounds}
+                                        onChange={e => setRounds(parseInt(e.target.value) || 1)}
+                                        className="w-full bg-transparent font-black text-gray-800 outline-none"
+                                    />
+                                </div>
+                                <div className="flex-1 flex items-center bg-gray-50 rounded-2xl border-2 border-gray-50 px-4 py-3.5">
+                                    <span className="text-sm font-bold text-gray-400 mr-3">Gaps (Days)</span>
+                                    <input
+                                        type="number" min="1" max="14"
+                                        value={gapDays}
+                                        onChange={e => setGapDays(parseInt(e.target.value) || 3)}
+                                        className="w-full bg-transparent font-black text-gray-800 outline-none"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Off Days</label>
+                            <div className="flex flex-wrap gap-2">
+                                {dayNames.map((name, i) => (
+                                    <button
+                                        key={name}
+                                        onClick={() => toggleOffDay(i)}
+                                        className={clsx(
+                                            "w-9 h-9 flex items-center justify-center rounded-xl text-[10px] font-black transition-all border-2",
+                                            offDays.includes(i)
+                                                ? "bg-red-50 border-red-200 text-red-600 shadow-sm"
+                                                : "bg-white border-gray-100 text-gray-400 hover:border-primary-200"
                                         )}
+                                    >
+                                        {name[0]}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-6 border-t border-gray-50">
+                        <div className="flex items-center gap-3 text-gray-400">
+                            <Info size={16} />
+                            <p className="text-xs font-medium">This will clear all current matches and results.</p>
+                        </div>
+                        <button
+                            onClick={() => { if (confirm('Generate new schedule? Current results will be lost!')) generateSchedule.mutate(); }}
+                            disabled={generateSchedule.isPending}
+                            className="bg-primary-600 text-white px-8 py-3.5 rounded-2xl font-black hover:bg-primary-700 transition-all shadow-xl shadow-primary-500/20 active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                        >
+                            {generateSchedule.isPending ? <RefreshCw className="animate-spin" size={18} /> : <span>Confirm & Generate</span>}
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Matches Display Grouped by Round */}
+            <div className="space-y-16">
+                {sortedRounds.map((roundNum, idx) => (
+                    <section
+                        key={roundNum}
+                        className={clsx(
+                            "rounded-[3rem] p-4 md:p-10 border-2 transition-all",
+                            idx % 2 === 0
+                                ? "bg-white border-gray-50 shadow-xl shadow-gray-200/50"
+                                : "bg-primary-50/30 border-primary-50"
+                        )}
+                    >
+                        <div className="flex items-center gap-6 mb-10 px-4">
+                            <div className="w-16 h-16 rounded-3xl bg-primary-600 text-white flex flex-col items-center justify-center shadow-lg shadow-primary-500/20">
+                                <span className="text-[10px] font-black uppercase opacity-70">Round</span>
+                                <span className="text-2xl font-black">{roundNum}</span>
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-black text-gray-900">Stage {roundNum}</h2>
+                                <p className="text-sm font-medium text-gray-500">Scheduled fixtures for this round.</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-12">
+                            {Object.entries(roundsMap[roundNum]).sort().map(([dateKey, dayMatches]) => (
+                                <div key={dateKey} className="space-y-6">
+                                    {/* Day Header with Separator */}
+                                    <div className="flex items-center gap-6">
+                                        <div className="w-fit flex items-center gap-3 bg-white px-5 py-2.5 rounded-2xl border-2 border-gray-50 shadow-sm">
+                                            <Clock size={14} className="text-primary-500" />
+                                            <span className="text-sm font-black text-gray-800 uppercase tracking-widest">
+                                                {format(parseISO(dateKey), 'EEEE, MMMM do')}
+                                            </span>
+                                        </div>
+                                        <div className="h-0.5 flex-1 bg-gradient-to-r from-gray-100 to-transparent"></div>
                                     </div>
 
-                                    <div className="flex-1 flex items-center justify-start gap-3 min-w-0">
-                                        <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center p-1.5 border border-gray-100 flex-shrink-0">
-                                            {match.awayTeam.logoUrl ? (
-                                                <img src={getImageUrl(match.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
-                                            ) : (
-                                                <div className="text-[10px] font-black text-gray-300">T</div>
-                                            )}
-                                        </div>
-                                        <span className={clsx("font-bold truncate text-sm", match.awayScore > match.homeScore ? "text-gray-900" : "text-gray-600")}>
-                                            {match.awayTeam.name}
-                                        </span>
+                                    {/* Matches for this day */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-2">
+                                        {dayMatches.map((m: any) => (
+                                            <div key={m.id} className="bg-white border-2 border-gray-50 p-6 rounded-[2rem] hover:border-primary-200 transition-all group hover:shadow-lg">
+                                                <div className="flex items-center justify-between gap-4">
+                                                    {/* Home Team */}
+                                                    <div className="flex-1 flex flex-col items-center gap-2 overflow-hidden">
+                                                        <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center p-2.5 border border-gray-100 overflow-hidden shadow-inner">
+                                                            {m.homeTeam.logoUrl ? (
+                                                                <img src={getImageUrl(m.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
+                                                            ) : (
+                                                                <div className="text-[10px] font-black text-gray-300">T</div>
+                                                            )}
+                                                        </div>
+                                                        <span className="text-xs font-black text-gray-700 uppercase tracking-tight truncate w-full text-center">{m.homeTeam.name}</span>
+                                                    </div>
+
+                                                    {/* Score or VS */}
+                                                    <div className="flex flex-col items-center gap-2">
+                                                        {m.status === 'PLAYED' ? (
+                                                            <div className="bg-gray-900 px-4 py-2 rounded-2xl text-xl font-black text-white shadow-xl shadow-gray-200 ring-4 ring-gray-100">
+                                                                {m.homeScore} - {m.awayScore}
+                                                            </div>
+                                                        ) : (
+                                                            <div className="text-[10px] font-black text-gray-400 bg-gray-100 px-4 py-2 rounded-xl border-2 border-gray-50 tracking-[0.3em] font-mono">
+                                                                VS
+                                                            </div>
+                                                        )}
+                                                        {m.status === 'PLAYED' && (
+                                                            <div className="flex items-center gap-1 text-[10px] text-green-600 font-bold uppercase tracking-widest">
+                                                                <CheckCircle size={10} /> Full Time
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Away Team */}
+                                                    <div className="flex-1 flex flex-col items-center gap-2 overflow-hidden">
+                                                        <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center p-2.5 border border-gray-100 overflow-hidden shadow-inner">
+                                                            {m.awayTeam.logoUrl ? (
+                                                                <img src={getImageUrl(m.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
+                                                            ) : (
+                                                                <div className="text-[10px] font-black text-gray-300">T</div>
+                                                            )}
+                                                        </div>
+                                                        <span className="text-xs font-black text-gray-700 uppercase tracking-tight truncate w-full text-center">{m.awayTeam.name}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        {dayMatches.every((m: any) => m.status === 'PLAYED') && (
-                            <div className="bg-green-50/50 p-2 text-center text-xs text-green-600 font-medium flex items-center justify-center">
-                                <CheckCircle size={12} className="mr-1" /> Completed
-                            </div>
-                        )}
-                    </div>
+                    </section>
                 ))}
             </div>
 
             {(!matches || matches.length === 0) && (
-                <div className="text-center py-12 bg-white rounded-xl border border-dashed border-gray-200">
-                    <Calendar size={48} className="mx-auto text-gray-300 mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900">No matches scheduled</h3>
-                    <p className="text-gray-500 mt-1">Wait for the admin to generate the schedule.</p>
+                <div className="py-40 text-center glass rounded-[4rem] border-4 border-dashed border-gray-100">
+                    <div className="p-10 bg-gray-50 rounded-full w-28 h-28 flex items-center justify-center mx-auto mb-8">
+                        <Calendar className="text-gray-200" size={40} />
+                    </div>
+                    <h3 className="text-3xl font-black text-gray-300">The Season Hasn't Started</h3>
+                    <p className="text-gray-400 mt-3 font-medium text-lg">
+                        {isAdmin ? 'Use the config panel above to generate the first round of matches.' : 'Fixture details will appear here once the admin generates the schedule.'}
+                    </p>
                 </div>
             )}
         </div>

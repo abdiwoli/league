@@ -1,10 +1,16 @@
-import { addDays, startOfToday } from 'date-fns';
+import { addDays, parseISO } from 'date-fns';
 import { Request, Response } from 'express';
 import prisma from '../utils/prisma';
 
 export const generateSchedule = async (req: Request, res: Response) => {
     try {
-        const { rounds = 1, daysBetweenMatches = 3 } = req.body;
+        const {
+            rounds = 1,
+            daysBetweenMatches = 3,
+            startDate = new Date().toISOString(),
+            offDays = [] // [0, 6] for weekends etc.
+        } = req.body;
+
         const teams = await prisma.team.findMany();
 
         if (teams.length < 2) {
@@ -22,36 +28,57 @@ export const generateSchedule = async (req: Request, res: Response) => {
         }
 
         const numTeams = scheduleTeams.length;
-        const numDays = numTeams - 1;
+        const numMatchdaysPerRound = numTeams - 1;
         const halfSize = numTeams / 2;
 
         let matchesToCreate = [];
-        let currentDate = addDays(startOfToday(), 1);
+        let currentDayDate = parseISO(startDate);
+
+        // Helper to find next valid date based on offDays
+        const getNextValidDate = (date: Date, skipGap = false) => {
+            let next = skipGap ? addDays(date, daysBetweenMatches) : date;
+            while (offDays.includes(next.getDay())) {
+                next = addDays(next, 1);
+            }
+            return next;
+        };
+
+        // Ensure start date itself is valid
+        currentDayDate = getNextValidDate(currentDayDate, false);
+
         let matchdayCounter = 1;
 
         for (let r = 0; r < rounds; r++) {
             let roundTeams = [...scheduleTeams];
-            for (let day = 0; day < numDays; day++) {
-                for (let i = 0; i < halfSize; i++) {
-                    const home = roundTeams[i];
-                    const away = roundTeams[numTeams - 1 - i];
+            for (let day = 0; day < numMatchdaysPerRound; day++) {
+                // Determine if this matchday should have a date jump
+                if (matchdayCounter > 1) {
+                    currentDayDate = getNextValidDate(currentDayDate, true);
+                }
 
-                    if (home.id !== 'BYE' && away.id !== 'BYE') {
-                        // Alternate home/away each round to be fair
-                        const actualHome = r % 2 === 0 ? home : away;
-                        const actualAway = r % 2 === 0 ? away : home;
+                for (let i = 0; i < halfSize; i++) {
+                    const team1 = roundTeams[i];
+                    const team2 = roundTeams[numTeams - 1 - i];
+
+                    if (team1.id !== 'BYE' && team2.id !== 'BYE') {
+                        // Alternate home/away based on round and index for fairness
+                        const isEvenRound = r % 2 === 0;
+                        const isEvenIndex = i % 2 === 0;
+
+                        const home = (isEvenRound ? isEvenIndex : !isEvenIndex) ? team1 : team2;
+                        const away = (isEvenRound ? isEvenIndex : !isEvenIndex) ? team2 : team1;
 
                         matchesToCreate.push({
                             matchday: matchdayCounter,
                             round: r + 1,
-                            date: addDays(currentDate, (matchdayCounter - 1) * daysBetweenMatches),
+                            date: currentDayDate,
                             status: 'SCHEDULED',
-                            homeTeamId: actualHome.id,
-                            awayTeamId: actualAway.id
+                            homeTeamId: home.id,
+                            awayTeamId: away.id
                         });
                     }
                 }
-                // Rotate teams for next day
+                // Rotate teams (keep first team fixed)
                 roundTeams.splice(1, 0, roundTeams.pop()!);
                 matchdayCounter++;
             }

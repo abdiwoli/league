@@ -6,8 +6,6 @@ import api, { getImageUrl } from '../lib/api';
 export const AdminDashboard: React.FC = () => {
     const queryClient = useQueryClient();
     const [newTeam, setNewTeam] = useState('');
-    const [rounds, setRounds] = useState(1);
-    const [daysBetweenMatches, setDaysBetweenMatches] = useState(3);
     const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
     const [editingTeamName, setEditingTeamName] = useState('');
 
@@ -82,14 +80,6 @@ export const AdminDashboard: React.FC = () => {
         }
     });
 
-    const generateSchedule = useMutation({
-        mutationFn: (params: { rounds: number, daysBetweenMatches: number }) =>
-            api.post('/matches/schedule', params),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['matches'] });
-            queryClient.invalidateQueries({ queryKey: ['league-table'] });
-        }
-    });
 
     const clearLeague = useMutation({
         mutationFn: () => api.delete('/matches'),
@@ -178,36 +168,10 @@ export const AdminDashboard: React.FC = () => {
                     >
                         Reset League
                     </button>
-                    <div className="flex items-center gap-3 bg-white p-1.5 rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100">
-                        <div className="flex items-center px-4 py-1.5 bg-gray-50 rounded-xl">
-                            <span className="text-[10px] text-gray-400 uppercase font-black tracking-widest mr-3">Rounds</span>
-                            <input
-                                type="number"
-                                min="1"
-                                max="10"
-                                value={rounds}
-                                onChange={e => setRounds(parseInt(e.target.value) || 1)}
-                                className="w-8 bg-transparent font-black text-gray-800 text-center outline-none"
-                            />
-                        </div>
-                        <div className="flex items-center px-4 py-1.5 bg-gray-50 rounded-xl">
-                            <span className="text-[10px] text-gray-400 uppercase font-black tracking-widest mr-3">Days</span>
-                            <input
-                                type="number"
-                                min="1"
-                                max="14"
-                                value={daysBetweenMatches}
-                                onChange={e => setDaysBetweenMatches(parseInt(e.target.value) || 3)}
-                                className="w-8 bg-transparent font-black text-gray-800 text-center outline-none"
-                            />
-                        </div>
-                        <button
-                            onClick={() => generateSchedule.mutate({ rounds, daysBetweenMatches })}
-                            className="bg-gray-900 text-white px-6 py-2.5 rounded-xl hover:bg-black font-bold text-sm flex items-center shadow-lg transition-all active:scale-95"
-                        >
-                            <Calendar size={18} className="mr-2" />
-                            {generateSchedule.isPending ? 'Generating...' : 'New Schedule'}
-                        </button>
+                    <div className="flex items-center gap-3 bg-white p-1.5 rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 px-4 py-2.5">
+                        <p className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                            League Management Active
+                        </p>
                     </div>
                 </div>
             </header>
@@ -228,7 +192,7 @@ export const AdminDashboard: React.FC = () => {
                                     {selectedFile ? (
                                         <div className="flex items-center gap-2">
                                             <div className="w-6 h-6 rounded-md bg-white border border-gray-100 overflow-hidden">
-                                                <img src={logoPreview!} className="w-full h-full object-cover" crossOrigin="anonymous" />
+                                                <img src={logoPreview!} className="w-full h-full object-cover" />
                                             </div>
                                             <span className="truncate max-w-[100px]">{selectedFile.name}</span>
                                         </div>
@@ -293,7 +257,7 @@ export const AdminDashboard: React.FC = () => {
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center gap-3">
                                             <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-[10px] font-black text-gray-400 overflow-hidden">
-                                                {t.logoUrl ? <img src={getImageUrl(t.logoUrl)!} alt="" className="w-full h-full object-cover" crossOrigin="anonymous" /> : 'T'}
+                                                {t.logoUrl ? <img src={getImageUrl(t.logoUrl)!} alt="" className="w-full h-full object-cover" /> : 'T'}
                                             </div>
                                             {editingTeamId === t.id ? (
                                                 <input
@@ -361,7 +325,7 @@ export const AdminDashboard: React.FC = () => {
                                                 <div className="flex-1 flex flex-col items-center gap-3">
                                                     <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center p-3 border border-gray-100 shadow-inner overflow-hidden">
                                                         {m.homeTeam.logoUrl ? (
-                                                            <img src={getImageUrl(m.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
+                                                            <img src={getImageUrl(m.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
                                                         ) : (
                                                             <ImageIcon className="text-gray-200" size={24} />
                                                         )}
@@ -397,7 +361,7 @@ export const AdminDashboard: React.FC = () => {
                                                 <div className="flex-1 flex flex-col items-center gap-3">
                                                     <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center p-3 border border-gray-100 shadow-inner overflow-hidden">
                                                         {m.awayTeam.logoUrl ? (
-                                                            <img src={getImageUrl(m.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
+                                                            <img src={getImageUrl(m.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
                                                         ) : (
                                                             <ImageIcon className="text-gray-200" size={24} />
                                                         )}
