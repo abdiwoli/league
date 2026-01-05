@@ -74,7 +74,7 @@ export const MatchList: React.FC = () => {
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     return (
-        <div className="space-y-10 pb-20 max-w-5xl mx-auto">
+        <div className="space-y-10 pb-20 max-w-6xl mx-auto px-4">
             {/* Header & Admin Trigger */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-100 pb-8">
                 <div>
@@ -242,7 +242,7 @@ export const MatchList: React.FC = () => {
                                                 <div className="flex items-center justify-between gap-4">
                                                     {/* Home Team */}
                                                     <div className="flex-1 flex flex-col items-center gap-3 overflow-hidden">
-                                                        <div className="w-20 h-20 rounded-[2rem] bg-gray-50 flex items-center justify-center p-3 border-2 border-gray-100 overflow-hidden shadow-inner group-hover:border-primary-100 transition-all">
+                                                        <div className="w-24 h-24 rounded-[2rem] bg-gray-50 flex items-center justify-center p-3 border-2 border-gray-100 overflow-hidden shadow-inner group-hover:border-primary-100 transition-all">
                                                             {m.homeTeam.logoUrl ? (
                                                                 <img src={getImageUrl(m.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
                                                             ) : (
@@ -272,7 +272,7 @@ export const MatchList: React.FC = () => {
 
                                                     {/* Away Team */}
                                                     <div className="flex-1 flex flex-col items-center gap-3 overflow-hidden">
-                                                        <div className="w-20 h-20 rounded-[2rem] bg-gray-50 flex items-center justify-center p-3 border-2 border-gray-100 overflow-hidden shadow-inner group-hover:border-primary-100 transition-all">
+                                                        <div className="w-24 h-24 rounded-[2rem] bg-gray-50 flex items-center justify-center p-3 border-2 border-gray-100 overflow-hidden shadow-inner group-hover:border-primary-100 transition-all">
                                                             {m.awayTeam.logoUrl ? (
                                                                 <img src={getImageUrl(m.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
                                                             ) : (
