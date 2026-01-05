@@ -19,7 +19,7 @@ router.post('/teams/upload-logo', authenticate, requireAdmin, upload.single('log
         res.status(400).json({ message: 'No file uploaded' });
         return;
     }
-    const url = `/uploads/logos/${req.file.filename}`;
+    const url = (req.file as any).path;
     res.json({ url });
 });
 
