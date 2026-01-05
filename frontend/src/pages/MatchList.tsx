@@ -55,7 +55,7 @@ export const MatchList: React.FC = () => {
                                         </span>
                                         <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center p-1.5 border border-gray-100 flex-shrink-0">
                                             {match.homeTeam.logoUrl ? (
-                                                <img src={getImageUrl(match.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
+                                                <img src={getImageUrl(match.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
                                             ) : (
                                                 <div className="text-[10px] font-black text-gray-300">T</div>
                                             )}
@@ -77,7 +77,7 @@ export const MatchList: React.FC = () => {
                                     <div className="flex-1 flex items-center justify-start gap-3 min-w-0">
                                         <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center p-1.5 border border-gray-100 flex-shrink-0">
                                             {match.awayTeam.logoUrl ? (
-                                                <img src={getImageUrl(match.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
+                                                <img src={getImageUrl(match.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
                                             ) : (
                                                 <div className="text-[10px] font-black text-gray-300">T</div>
                                             )}

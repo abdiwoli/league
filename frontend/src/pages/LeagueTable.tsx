@@ -58,7 +58,7 @@ export const LeagueTable: React.FC = () => {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center">
                                             {team.logoUrl ? (
-                                                <img src={getImageUrl(team.logoUrl)!} className="w-8 h-8 rounded-full object-cover mr-3 bg-gray-100 border border-gray-100" />
+                                                <img src={getImageUrl(team.logoUrl)!} className="w-8 h-8 rounded-full object-cover mr-3 bg-gray-100 border border-gray-100" crossOrigin="anonymous" />
                                             ) : (
                                                 <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-black mr-3 text-[10px]">
                                                     {team.name.substring(0, 2).toUpperCase()}

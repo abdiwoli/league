@@ -228,7 +228,7 @@ export const AdminDashboard: React.FC = () => {
                                     {selectedFile ? (
                                         <div className="flex items-center gap-2">
                                             <div className="w-6 h-6 rounded-md bg-white border border-gray-100 overflow-hidden">
-                                                <img src={logoPreview!} className="w-full h-full object-cover" />
+                                                <img src={logoPreview!} className="w-full h-full object-cover" crossOrigin="anonymous" />
                                             </div>
                                             <span className="truncate max-w-[100px]">{selectedFile.name}</span>
                                         </div>
@@ -293,7 +293,7 @@ export const AdminDashboard: React.FC = () => {
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center gap-3">
                                             <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-[10px] font-black text-gray-400 overflow-hidden">
-                                                {t.logoUrl ? <img src={getImageUrl(t.logoUrl)!} alt="" className="w-full h-full object-cover" /> : 'T'}
+                                                {t.logoUrl ? <img src={getImageUrl(t.logoUrl)!} alt="" className="w-full h-full object-cover" crossOrigin="anonymous" /> : 'T'}
                                             </div>
                                             {editingTeamId === t.id ? (
                                                 <input
@@ -361,7 +361,7 @@ export const AdminDashboard: React.FC = () => {
                                                 <div className="flex-1 flex flex-col items-center gap-3">
                                                     <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center p-3 border border-gray-100 shadow-inner overflow-hidden">
                                                         {m.homeTeam.logoUrl ? (
-                                                            <img src={getImageUrl(m.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
+                                                            <img src={getImageUrl(m.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
                                                         ) : (
                                                             <ImageIcon className="text-gray-200" size={24} />
                                                         )}
@@ -397,7 +397,7 @@ export const AdminDashboard: React.FC = () => {
                                                 <div className="flex-1 flex flex-col items-center gap-3">
                                                     <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center p-3 border border-gray-100 shadow-inner overflow-hidden">
                                                         {m.awayTeam.logoUrl ? (
-                                                            <img src={getImageUrl(m.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
+                                                            <img src={getImageUrl(m.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
                                                         ) : (
                                                             <ImageIcon className="text-gray-200" size={24} />
                                                         )}
