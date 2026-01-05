@@ -6,9 +6,11 @@ export const generateSchedule = async (req: Request, res: Response) => {
     try {
         const {
             rounds = 1,
-            daysBetweenMatches = 3,
+            daysBetweenMatches = 1,
             startDate = new Date().toISOString(),
-            offDays = [] // [0, 6] for weekends etc.
+            offDays = [],
+            playDays = 2,
+            restDays = 1
         } = req.body;
 
         const teams = await prisma.team.findMany();
@@ -47,12 +49,21 @@ export const generateSchedule = async (req: Request, res: Response) => {
         currentDayDate = getNextValidDate(currentDayDate, false);
 
         let matchdayCounter = 1;
+        let patternPlayCounter = 0; // Tracks consecutive play days
 
         for (let r = 0; r < rounds; r++) {
             let roundTeams = [...scheduleTeams];
             for (let day = 0; day < numMatchdaysPerRound; day++) {
                 // Determine if this matchday should have a date jump
                 if (matchdayCounter > 1) {
+                    patternPlayCounter++;
+
+                    // If we finished a "Play" cycle, add the "Rest" days
+                    if (patternPlayCounter >= playDays) {
+                        currentDayDate = addDays(currentDayDate, restDays);
+                        patternPlayCounter = 0;
+                    }
+
                     currentDayDate = getNextValidDate(currentDayDate, true);
                 }
 

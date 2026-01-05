@@ -22,7 +22,9 @@ export const MatchList: React.FC = () => {
     // Scheduling Form State
     const [showAdminControls, setShowAdminControls] = useState(false);
     const [rounds, setRounds] = useState(1);
-    const [gapDays, setGapDays] = useState(3);
+    const [gapDays, setGapDays] = useState(1);
+    const [playDays, setPlayDays] = useState(2);
+    const [restDays, setRestDays] = useState(1);
     const [startDate, setStartDate] = useState(format(addDays(startOfToday(), 1), 'yyyy-MM-dd'));
     const [offDays, setOffDays] = useState<number[]>([]); // 0=Sun, 6=Sat
 
@@ -32,7 +34,9 @@ export const MatchList: React.FC = () => {
                 rounds,
                 daysBetweenMatches: gapDays,
                 startDate,
-                offDays
+                offDays,
+                playDays,
+                restDays
             });
         },
         onSuccess: () => {
@@ -126,7 +130,31 @@ export const MatchList: React.FC = () => {
                                     <input
                                         type="number" min="1" max="14"
                                         value={gapDays}
-                                        onChange={e => setGapDays(parseInt(e.target.value) || 3)}
+                                        onChange={e => setGapDays(parseInt(e.target.value) || 1)}
+                                        className="w-full bg-transparent font-black text-gray-800 outline-none"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Play / Rest Pattern</label>
+                            <div className="flex items-center gap-3">
+                                <div className="flex-1 flex items-center bg-gray-50 rounded-2xl border-2 border-gray-50 px-4 py-3.5">
+                                    <span className="text-sm font-bold text-gray-400 mr-3">Play</span>
+                                    <input
+                                        type="number" min="1" max="10"
+                                        value={playDays}
+                                        onChange={e => setPlayDays(parseInt(e.target.value) || 1)}
+                                        className="w-full bg-transparent font-black text-gray-800 outline-none"
+                                    />
+                                </div>
+                                <div className="flex-1 flex items-center bg-gray-50 rounded-2xl border-2 border-gray-50 px-4 py-3.5">
+                                    <span className="text-sm font-bold text-gray-400 mr-3">Rest</span>
+                                    <input
+                                        type="number" min="0" max="10"
+                                        value={restDays}
+                                        onChange={e => setRestDays(parseInt(e.target.value) || 0)}
                                         className="w-full bg-transparent font-black text-gray-800 outline-none"
                                     />
                                 </div>
