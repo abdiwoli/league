@@ -236,54 +236,56 @@ export const MatchList: React.FC = () => {
                                     </div>
 
                                     {/* Matches for this day */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-2">
-                                        {dayMatches.map((m: any) => (
-                                            <div key={m.id} className="bg-white border-2 border-gray-50 p-6 rounded-[2rem] hover:border-primary-200 transition-all group hover:shadow-lg">
-                                                <div className="flex items-center justify-between gap-4">
-                                                    {/* Home Team */}
-                                                    <div className="flex-1 flex flex-col items-center gap-3 overflow-hidden">
-                                                        <div className="w-24 h-24 rounded-[2rem] bg-gray-50 flex items-center justify-center p-3 border-2 border-gray-100 overflow-hidden shadow-inner group-hover:border-primary-100 transition-all">
-                                                            {m.homeTeam.logoUrl ? (
-                                                                <img src={getImageUrl(m.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
+                                    <div className="flex justify-center">
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full max-w-5xl">
+                                            {dayMatches.map((m: any) => (
+                                                <div key={m.id} className="bg-white border-2 border-gray-50 p-8 md:p-10 rounded-[2.5rem] hover:border-primary-200 transition-all group hover:shadow-xl">
+                                                    <div className="flex items-center justify-between gap-6">
+                                                        {/* Home Team */}
+                                                        <div className="flex-1 flex flex-col items-center gap-3 overflow-hidden">
+                                                            <div className="w-28 h-28 md:w-32 md:h-32 lg:w-40 lg:h-40 rounded-[2rem] bg-gray-50 flex items-center justify-center p-4 border-2 border-gray-100 overflow-hidden shadow-inner group-hover:border-primary-100 transition-all">
+                                                                {m.homeTeam.logoUrl ? (
+                                                                    <img src={getImageUrl(m.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
+                                                                ) : (
+                                                                    <div className="text-xl font-black text-gray-300">T</div>
+                                                                )}
+                                                            </div>
+                                                            <span className="text-sm md:text-base lg:text-lg font-black text-gray-700 uppercase tracking-tight text-center px-2">{m.homeTeam.name}</span>
+                                                        </div>
+
+                                                        {/* Score or VS */}
+                                                        <div className="flex flex-col items-center gap-2">
+                                                            {m.status === 'PLAYED' ? (
+                                                                <div className="bg-gray-900 px-4 py-2 rounded-2xl text-xl font-black text-white shadow-xl shadow-gray-200 ring-4 ring-gray-100">
+                                                                    {m.homeScore} - {m.awayScore}
+                                                                </div>
                                                             ) : (
-                                                                <div className="text-xl font-black text-gray-300">T</div>
+                                                                <div className="text-[10px] font-black text-gray-400 bg-gray-100 px-4 py-2 rounded-xl border-2 border-gray-50 tracking-[0.3em] font-mono">
+                                                                    VS
+                                                                </div>
+                                                            )}
+                                                            {m.status === 'PLAYED' && (
+                                                                <div className="flex items-center gap-1 text-[10px] text-green-600 font-bold uppercase tracking-widest">
+                                                                    <CheckCircle size={10} /> Full Time
+                                                                </div>
                                                             )}
                                                         </div>
-                                                        <span className="text-sm font-black text-gray-700 uppercase tracking-tight truncate w-full text-center">{m.homeTeam.name}</span>
-                                                    </div>
 
-                                                    {/* Score or VS */}
-                                                    <div className="flex flex-col items-center gap-2">
-                                                        {m.status === 'PLAYED' ? (
-                                                            <div className="bg-gray-900 px-4 py-2 rounded-2xl text-xl font-black text-white shadow-xl shadow-gray-200 ring-4 ring-gray-100">
-                                                                {m.homeScore} - {m.awayScore}
+                                                        {/* Away Team */}
+                                                        <div className="flex-1 flex flex-col items-center gap-3 overflow-hidden">
+                                                            <div className="w-28 h-28 md:w-32 md:h-32 lg:w-40 lg:h-40 rounded-[2rem] bg-gray-50 flex items-center justify-center p-4 border-2 border-gray-100 overflow-hidden shadow-inner group-hover:border-primary-100 transition-all">
+                                                                {m.awayTeam.logoUrl ? (
+                                                                    <img src={getImageUrl(m.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
+                                                                ) : (
+                                                                    <div className="text-xl font-black text-gray-300">T</div>
+                                                                )}
                                                             </div>
-                                                        ) : (
-                                                            <div className="text-[10px] font-black text-gray-400 bg-gray-100 px-4 py-2 rounded-xl border-2 border-gray-50 tracking-[0.3em] font-mono">
-                                                                VS
-                                                            </div>
-                                                        )}
-                                                        {m.status === 'PLAYED' && (
-                                                            <div className="flex items-center gap-1 text-[10px] text-green-600 font-bold uppercase tracking-widest">
-                                                                <CheckCircle size={10} /> Full Time
-                                                            </div>
-                                                        )}
-                                                    </div>
-
-                                                    {/* Away Team */}
-                                                    <div className="flex-1 flex flex-col items-center gap-3 overflow-hidden">
-                                                        <div className="w-24 h-24 rounded-[2rem] bg-gray-50 flex items-center justify-center p-3 border-2 border-gray-100 overflow-hidden shadow-inner group-hover:border-primary-100 transition-all">
-                                                            {m.awayTeam.logoUrl ? (
-                                                                <img src={getImageUrl(m.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" crossOrigin="anonymous" />
-                                                            ) : (
-                                                                <div className="text-xl font-black text-gray-300">T</div>
-                                                            )}
+                                                            <span className="text-sm md:text-base lg:text-lg font-black text-gray-700 uppercase tracking-tight text-center px-2">{m.awayTeam.name}</span>
                                                         </div>
-                                                        <span className="text-sm font-black text-gray-700 uppercase tracking-tight truncate w-full text-center">{m.awayTeam.name}</span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -306,3 +308,4 @@ export const MatchList: React.FC = () => {
         </div>
     );
 };
+
