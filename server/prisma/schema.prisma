@@ -21,6 +21,7 @@ model Team {
   logoUrl     String?
   matchesHome Match[] @relation("HomeTeam")
   matchesAway Match[] @relation("AwayTeam")
+  players     Player[]
 }
 
 model Match {
@@ -38,6 +39,36 @@ model Match {
   homeScore Int?
   awayScore Int?
 
+  playerStats PlayerStats[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Player {
+  id        String        @id @default(uuid())
+  name      String
+  number    Int           // Jersey number
+  teamId    String
+  team      Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  stats     PlayerStats[]
+  createdAt DateTime      @default(now())
+  
+  @@unique([teamId, number]) // Prevent duplicate numbers in same team
+}
+
+model PlayerStats {
+  id          String   @id @default(uuid())
+  playerId    String
+  matchId     String
+  goals       Int      @default(0)
+  assists     Int      @default(0)
+  yellowCards Int      @default(0)
+  redCards    Int      @default(0)
+  minutesPlayed Int?   // Optional: minutes played
+  
+  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  
+  @@unique([playerId, matchId]) // One stats record per player per match
 }

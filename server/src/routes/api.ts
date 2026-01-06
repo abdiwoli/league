@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import * as LeagueController from '../controllers/leagueController';
 import * as MatchController from '../controllers/matchController';
+import * as PlayerController from '../controllers/playerController';
+import * as StatsController from '../controllers/statsController';
 import * as TeamController from '../controllers/teamController';
 import { authenticate, requireAdmin } from '../middleware/authMiddleware';
 
@@ -31,5 +33,19 @@ router.delete('/matches', authenticate, requireAdmin, MatchController.clearLeagu
 
 // League
 router.get('/table', LeagueController.getLeagueTable);
+
+// Players
+router.get('/players', PlayerController.getPlayers);
+router.get('/players/team/:teamId', PlayerController.getPlayersByTeam);
+router.post('/players', authenticate, requireAdmin, PlayerController.createPlayer);
+router.put('/players/:id', authenticate, requireAdmin, PlayerController.updatePlayer);
+router.delete('/players/:id', authenticate, requireAdmin, PlayerController.deletePlayer);
+
+// Statistics
+router.post('/stats/match/:matchId', authenticate, requireAdmin, StatsController.recordMatchStats);
+router.get('/stats/match/:matchId', StatsController.getMatchStats);
+router.get('/stats/player/:playerId', StatsController.getPlayerStats);
+router.get('/stats/league', StatsController.getLeagueStats);
+router.get('/stats/top-performers', StatsController.getTopPerformers);
 
 export default router;

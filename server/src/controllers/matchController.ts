@@ -145,12 +145,13 @@ export const getMatches = async (req: Request, res: Response) => {
     try {
         const matches = await prisma.match.findMany({
             include: {
-                homeTeam: true,
-                awayTeam: true
+                homeTeam: { include: { players: true } },
+                awayTeam: { include: { players: true } }
             },
-            orderBy: { date: 'asc' }
-        });
-        res.json(matches);
+            orderBy: {
+                date: 'asc'
+            }
+        }); res.json(matches);
     } catch (error: any) {
         console.error('Get matches error:', error);
         res.status(500).json({

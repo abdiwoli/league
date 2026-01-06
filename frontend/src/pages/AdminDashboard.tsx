@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Calendar, Edit2, Image as ImageIcon, Plus, RefreshCw, Save, Trash2 } from 'lucide-react';
+import { Calendar, Edit2, Image as ImageIcon, Plus, RefreshCw, Save, Trash2, Trophy, User } from 'lucide-react';
 import React, { useState } from 'react';
+import { MatchStatsModal } from '../components/MatchStatsModal';
 import api, { getImageUrl } from '../lib/api';
 
 export const AdminDashboard: React.FC = () => {
@@ -9,16 +10,25 @@ export const AdminDashboard: React.FC = () => {
     const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
     const [editingTeamName, setEditingTeamName] = useState('');
 
-    // Logo Upload State
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
     // Schedule Generation State
     const [scheduleWeeks, setScheduleWeeks] = useState(4);
 
+    // Player State
+    const [newPlayerName, setNewPlayerName] = useState('');
+    const [newPlayerNumber, setNewPlayerNumber] = useState('');
+    const [selectedTeamId, setSelectedTeamId] = useState('');
+
+    // Stats Modal State
+    const [statsModalOpen, setStatsModalOpen] = useState(false);
+    const [selectedMatch, setSelectedMatch] = useState<any>(null);
+
     // Queries
     const { data: teams } = useQuery({ queryKey: ['teams'], queryFn: () => api.get('/teams').then(r => r.data) });
     const { data: matches } = useQuery({ queryKey: ['matches'], queryFn: () => api.get('/matches').then(r => r.data) });
+    const { data: players } = useQuery({ queryKey: ['players'], queryFn: () => api.get('/players').then(r => r.data) });
 
     // Mutations
     const uploadLogo = useMutation({
@@ -117,6 +127,26 @@ export const AdminDashboard: React.FC = () => {
         },
         onError: (err: any) => {
             alert('Failed to generate schedule: ' + (err.response?.data?.message || err.message));
+        }
+    });
+
+    const createPlayer = useMutation({
+        mutationFn: (data: any) => api.post('/players', data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['players'] });
+            queryClient.invalidateQueries({ queryKey: ['teams'] }); // Refresh teams to get updated player lists if nested
+            setNewPlayerName('');
+            setNewPlayerNumber('');
+        },
+        onError: (err: any) => {
+            alert('Failed to create player: ' + (err.response?.data?.message || err.message));
+        }
+    });
+
+    const deletePlayer = useMutation({
+        mutationFn: (id: string) => api.delete(`/players/${id}`),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['players'] });
         }
     });
 
@@ -324,9 +354,100 @@ export const AdminDashboard: React.FC = () => {
                         </div>
                     </section>
 
+                    {/* Player Management Section */}
+                    <section className="glass p-6 rounded-[2.5rem] border-2 border-white shadow-2xl shadow-gray-200/40 mb-10">
+                        <h2 className="text-xl font-black text-gray-800 mb-6 flex items-center">
+                            <User size={20} className="mr-2 text-primary-500" /> Player Registry
+                        </h2>
+
+                        <div className="space-y-4 mb-8">
+                            <div className="space-y-3">
+                                <input
+                                    value={newPlayerName}
+                                    onChange={e => setNewPlayerName(e.target.value)}
+                                    placeholder="Player Name"
+                                    className="w-full px-5 py-3 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none font-bold text-sm"
+                                />
+                                <div className="flex gap-2">
+                                    <input
+                                        type="number"
+                                        value={newPlayerNumber}
+                                        onChange={e => setNewPlayerNumber(e.target.value)}
+                                        placeholder="#"
+                                        className="w-20 px-5 py-3 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none font-bold text-sm text-center"
+                                    />
+                                    <select
+                                        value={selectedTeamId}
+                                        onChange={e => setSelectedTeamId(e.target.value)}
+                                        className="flex-1 px-5 py-3 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none font-bold text-sm appearance-none cursor-pointer"
+                                    >
+                                        <option value="">Select Team</option>
+                                        {teams?.map((t: any) => (
+                                            <option key={t.id} value={t.id}>{t.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        if (newPlayerName && newPlayerNumber && selectedTeamId) {
+                                            createPlayer.mutate({
+                                                name: newPlayerName,
+                                                number: parseInt(newPlayerNumber),
+                                                teamId: selectedTeamId
+                                            });
+                                        }
+                                    }}
+                                    disabled={!newPlayerName || !newPlayerNumber || !selectedTeamId || createPlayer.isPending}
+                                    className="w-full py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-all shadow-lg disabled:opacity-50"
+                                >
+                                    {createPlayer.isPending ? 'Adding...' : 'Add Player'}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            {teams?.map((team: any) => {
+                                const teamPlayers = players?.filter((p: any) => p.teamId === team.id) || [];
+                                return (
+                                    <div key={team.id} className="bg-gray-50/50 rounded-xl p-4 border border-gray-100">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <h3 className="font-bold text-gray-700 text-sm flex items-center gap-2">
+                                                {team.logoUrl ? <img src={getImageUrl(team.logoUrl)!} className="w-5 h-5 object-contain" /> : null}
+                                                {team.name}
+                                            </h3>
+                                            <span className="text-xs font-black bg-white px-2 py-1 rounded-md text-gray-400 border border-gray-100">
+                                                {teamPlayers.length}
+                                            </span>
+                                        </div>
+                                        <div className="space-y-2">
+                                            {teamPlayers.length > 0 ? (
+                                                teamPlayers.map((player: any) => (
+                                                    <div key={player.id} className="flex items-center justify-between group">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-xs font-black text-gray-300 w-5 text-center">{player.number}</span>
+                                                            <span className="text-sm font-bold text-gray-600">{player.name}</span>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => { if (confirm('Remove player?')) deletePlayer.mutate(player.id); }}
+                                                            className="text-red-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        >
+                                                            <Trash2 size={12} />
+                                                        </button>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p className="text-xs text-center text-gray-400 font-medium py-2">No players</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </section>
+
                     <section className="glass p-6 rounded-[2.5rem] border-2 border-white shadow-2xl shadow-gray-200/40">
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-black text-gray-800">Registry</h2>
+                            <h2 className="text-xl font-black text-gray-800">Team Registry</h2>
                             {teams && teams.length > 0 && (
                                 <button
                                     onClick={() => { if (confirm('Delete ALL teams? This will clear everything!')) deleteAllTeams.mutate(); }}
@@ -357,6 +478,8 @@ export const AdminDashboard: React.FC = () => {
                                             ) : (
                                                 <span className="font-bold text-gray-800">{t.name}</span>
                                             )}
+
+
                                         </div>
                                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button
@@ -476,6 +599,19 @@ export const AdminDashboard: React.FC = () => {
                                                         <Save size={16} className="mr-2" /> Push Result
                                                     </button>
                                                 )}
+
+                                                {/* Player Stats Button */}
+                                                {!editingScores[m.id] && m.status === 'PLAYED' && (
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedMatch(m);
+                                                            setStatsModalOpen(true);
+                                                        }}
+                                                        className="w-full mt-4 py-3 bg-white text-gray-900 border-2 border-gray-100 rounded-2xl font-black text-sm hover:border-gray-900 hover:bg-gray-900 hover:text-white flex items-center justify-center transition-all shadow-sm hover:shadow-md"
+                                                    >
+                                                        <Trophy size={16} className="mr-2" /> Record Stats
+                                                    </button>
+                                                )}
                                             </div>
                                         ))}
                                     </div>
@@ -495,6 +631,16 @@ export const AdminDashboard: React.FC = () => {
                     </div>
                 </main>
             </div>
+
+            {/* Stats Modal */}
+            <MatchStatsModal
+                isOpen={statsModalOpen}
+                onClose={() => {
+                    setStatsModalOpen(false);
+                    setSelectedMatch(null);
+                }}
+                match={selectedMatch}
+            />
         </div>
     );
 };
