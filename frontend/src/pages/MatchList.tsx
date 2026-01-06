@@ -477,11 +477,11 @@ export const MatchList: React.FC = () => {
                           shadow-lg md:shadow-xl
                         "
                                             >
-                                                {/* Mobile: Vertical Stack */}
-                                                <div className="flex md:hidden flex-col gap-4">
+                                                {/* Mobile: Horizontal Compact */}
+                                                <div className="flex md:hidden items-center justify-between gap-2">
                                                     {/* HOME */}
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-16 h-16 bg-white rounded-xl p-2 border shadow flex-shrink-0">
+                                                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                                                        <div className="w-12 h-12 bg-white rounded-lg p-1.5 border shadow flex-shrink-0">
                                                             {m.homeTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.homeTeam.logoUrl)!}
@@ -490,27 +490,36 @@ export const MatchList: React.FC = () => {
                                                                 />
                                                             )}
                                                         </div>
-                                                        <div className="text-lg font-black flex-1 min-w-0">
+                                                        <div className="text-sm font-black truncate">
                                                             {m.homeTeam.name}
                                                         </div>
                                                     </div>
 
-                                                    {/* SCORE */}
-                                                    <div className="flex items-center justify-center">
+                                                    {/* SCORE/VS */}
+                                                    <div className="flex flex-col items-center flex-shrink-0">
                                                         {m.status === 'PLAYED' ? (
-                                                            <div className="bg-gray-900 text-white text-2xl font-black px-4 py-2 rounded-xl">
-                                                                {m.homeScore} – {m.awayScore}
-                                                            </div>
+                                                            <>
+                                                                <div className="bg-gray-900 text-white text-lg font-black px-3 py-1.5 rounded-lg">
+                                                                    {m.homeScore} – {m.awayScore}
+                                                                </div>
+                                                                <div className="flex items-center gap-1 text-green-600 text-[10px] mt-1 font-bold">
+                                                                    <CheckCircle size={10} />
+                                                                    FT
+                                                                </div>
+                                                            </>
                                                         ) : (
-                                                            <div className="text-gray-400 text-lg font-black tracking-widest">
+                                                            <div className="text-gray-400 text-sm font-black">
                                                                 VS
                                                             </div>
                                                         )}
                                                     </div>
 
                                                     {/* AWAY */}
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-16 h-16 bg-white rounded-xl p-2 border shadow flex-shrink-0">
+                                                    <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
+                                                        <div className="text-sm font-black truncate text-right">
+                                                            {m.awayTeam.name}
+                                                        </div>
+                                                        <div className="w-12 h-12 bg-white rounded-lg p-1.5 border shadow flex-shrink-0">
                                                             {m.awayTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.awayTeam.logoUrl)!}
@@ -519,17 +528,7 @@ export const MatchList: React.FC = () => {
                                                                 />
                                                             )}
                                                         </div>
-                                                        <div className="text-lg font-black flex-1 min-w-0">
-                                                            {m.awayTeam.name}
-                                                        </div>
                                                     </div>
-
-                                                    {m.status === 'PLAYED' && (
-                                                        <div className="flex items-center justify-center gap-1 text-green-600 text-xs font-bold">
-                                                            <CheckCircle size={12} />
-                                                            FULL TIME
-                                                        </div>
-                                                    )}
                                                 </div>
 
                                                 {/* Desktop: Horizontal Layout */}
