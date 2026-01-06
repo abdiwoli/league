@@ -25,65 +25,71 @@ export const LeagueTable: React.FC = () => {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full whitespace-nowrap">
-                        <thead className="bg-gray-50/50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        <thead className="bg-gray-50/50 border-b border-gray-100 text-sm font-black text-gray-400 uppercase tracking-widest">
                             <tr>
-                                <th className="px-6 py-4 text-left w-12">Pos</th>
-                                <th className="px-6 py-4 text-left">Team</th>
-                                <th className="px-4 py-4 text-center">P</th>
-                                <th className="px-4 py-4 text-center">W</th>
-                                <th className="px-4 py-4 text-center">D</th>
-                                <th className="px-4 py-4 text-center">L</th>
-                                <th className="px-4 py-4 text-center hidden md:table-cell">GF</th>
-                                <th className="px-4 py-4 text-center hidden md:table-cell">GA</th>
-                                <th className="px-4 py-4 text-center">GD</th>
-                                <th className="px-6 py-4 text-center font-bold text-gray-900">Pts</th>
+                                <th className="px-8 py-6 text-left w-20">Pos</th>
+                                <th className="px-8 py-6 text-left">Team</th>
+                                <th className="px-6 py-6 text-center">P</th>
+                                <th className="px-6 py-6 text-center">W</th>
+                                <th className="px-6 py-6 text-center">D</th>
+                                <th className="px-6 py-6 text-center">L</th>
+                                <th className="px-6 py-6 text-center hidden xl:table-cell">GF</th>
+                                <th className="px-6 py-6 text-center hidden xl:table-cell">GA</th>
+                                <th className="px-6 py-6 text-center">GD</th>
+                                <th className="px-8 py-6 text-center font-black text-gray-900">Pts</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                             {table?.map((team: any, idx: number) => (
                                 <tr key={team.id} className={clsx(
-                                    "hover:bg-gray-50/50 transition-colors",
-                                    idx === 0 && "bg-gradient-to-r from-yellow-50/50 to-transparent"
+                                    "hover:bg-gray-50/50 transition-all group",
+                                    idx === 0 && "bg-gradient-to-r from-yellow-50/30 to-transparent"
                                 )}>
-                                    <td className="px-6 py-4">
+                                    <td className="px-8 py-8 md:py-10">
                                         <div className={clsx(
-                                            "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-sm",
+                                            "w-12 h-12 md:w-16 md:h-16 rounded-2xl flex items-center justify-center text-xl md:text-2xl font-black shadow-sm transition-transform group-hover:scale-110",
                                             idx === 0 ? "bg-yellow-100 text-yellow-700" :
                                                 idx === 1 ? "bg-gray-100 text-gray-700" :
-                                                    idx === 2 ? "bg-orange-50 text-orange-700" : "bg-white border text-gray-500"
+                                                    idx === 2 ? "bg-orange-50 text-orange-700" : "bg-white border-2 border-gray-100 text-gray-400"
                                         )}>
                                             {idx + 1}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center">
-                                            {team.logoUrl ? (
-                                                <img src={getImageUrl(team.logoUrl)!} className="w-8 h-8 rounded-full object-cover mr-3 bg-gray-100 border border-gray-100" crossOrigin="anonymous" />
-                                            ) : (
-                                                <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-black mr-3 text-[10px]">
-                                                    {team.name.substring(0, 2).toUpperCase()}
-                                                </div>
-                                            )}
-                                            <span className="font-bold text-gray-900">{team.name}</span>
-                                            {idx === 0 && <Trophy size={14} className="ml-2 text-yellow-500" />}
+                                    <td className="px-8 py-8 md:py-10">
+                                        <div className="flex items-center gap-6 md:gap-8">
+                                            <div className="relative">
+                                                {team.logoUrl ? (
+                                                    <img src={getImageUrl(team.logoUrl)!} className="w-16 h-16 md:w-24 md:h-24 object-contain drop-shadow-lg transition-transform group-hover:scale-105 duration-300" crossOrigin="anonymous" />
+                                                ) : (
+                                                    <div className="w-16 h-16 md:w-24 md:h-24 rounded-3xl bg-primary-50 text-primary-300 flex items-center justify-center font-black text-3xl md:text-5xl">
+                                                        {team.name.substring(0, 1).toUpperCase()}
+                                                    </div>
+                                                )}
+                                                {idx === 0 && (
+                                                    <div className="absolute -top-3 -right-3 bg-yellow-400 text-white p-2 rounded-full shadow-lg animate-bounce">
+                                                        <Trophy size={20} fill="currentColor" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <span className="font-black text-2xl md:text-4xl text-gray-900 tracking-tight">{team.name}</span>
                                         </div>
                                     </td>
-                                    <td className="px-4 py-4 text-center text-gray-500">{team.played}</td>
-                                    <td className="px-4 py-4 text-center text-gray-900 font-medium">{team.won}</td>
-                                    <td className="px-4 py-4 text-center text-gray-500">{team.drawn}</td>
-                                    <td className="px-4 py-4 text-center text-gray-500">{team.lost}</td>
-                                    <td className="px-4 py-4 text-center text-gray-400 hidden md:table-cell">{team.gf}</td>
-                                    <td className="px-4 py-4 text-center text-gray-400 hidden md:table-cell">{team.ga}</td>
-                                    <td className="px-4 py-4 text-center">
+                                    <td className="px-6 py-8 md:py-10 text-center text-xl md:text-2xl text-gray-400 font-bold">{team.played}</td>
+                                    <td className="px-6 py-8 md:py-10 text-center text-xl md:text-2xl text-gray-900 font-black">{team.won}</td>
+                                    <td className="px-6 py-8 md:py-10 text-center text-xl md:text-2xl text-gray-400 font-bold">{team.drawn}</td>
+                                    <td className="px-6 py-8 md:py-10 text-center text-xl md:text-2xl text-gray-400 font-bold">{team.lost}</td>
+                                    <td className="px-6 py-8 md:py-10 text-center text-xl text-gray-400 font-bold hidden xl:table-cell">{team.gf}</td>
+                                    <td className="px-6 py-8 md:py-10 text-center text-xl text-gray-400 font-bold hidden xl:table-cell">{team.ga}</td>
+                                    <td className="px-6 py-8 md:py-10 text-center">
                                         <span className={clsx(
-                                            "px-2 py-1 rounded text-xs font-medium",
-                                            team.gd > 0 ? "bg-green-50 text-green-700" :
-                                                team.gd < 0 ? "bg-red-50 text-red-700" : "bg-gray-100 text-gray-600"
+                                            "px-4 py-2 rounded-xl text-lg md:text-xl font-black",
+                                            team.gd > 0 ? "bg-green-100 text-green-700" :
+                                                team.gd < 0 ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-500"
                                         )}>
                                             {team.gd > 0 ? '+' : ''}{team.gd}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-center font-bold text-lg text-primary-700">
+                                    <td className="px-8 py-8 md:py-10 text-center font-black text-4xl md:text-6xl text-primary-600">
                                         {team.pts}
                                     </td>
                                 </tr>
