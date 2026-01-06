@@ -13,7 +13,7 @@ export const Layout: React.FC = () => {
         <div className="min-h-screen bg-gray-100 pb-20 md:pb-0 md:pl-64 transition-all duration-300">
             {/* Mobile Header */}
             <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white shadow-sm z-50 flex items-center px-4 justify-between">
-                <div className="font-bold text-xl text-primary-600">LeagueMgr</div>
+                <div className="font-bold text-xl text-primary-600">Respect League</div>
                 {user && (
                     <button onClick={() => logout()} className="p-2 text-gray-500">
                         <LogOut size={20} />
@@ -25,12 +25,12 @@ export const Layout: React.FC = () => {
             <aside className="hidden md:flex flex-col fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-gray-200 z-50">
                 <div className="h-16 flex items-center px-6 border-b border-gray-100">
                     <span className="font-bold text-2xl text-primary-600 bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400">
-                        LeagueMgr
+                        Respect League
                     </span>
                 </div>
 
                 <nav className="flex-1 py-6 px-3 space-y-1">
-                    <NavItem to="/" icon={<Table2 />} label="League Table" active={isActive('/')} />
+                    <NavItem to="/" icon={<Table2 />} label="Respect League" active={isActive('/')} />
                     <NavItem to="/matches" icon={<Calendar />} label="Matches" active={isActive('/matches')} />
                     <NavItem to="/stats" icon={<Trophy />} label="Player Stats" active={isActive('/stats')} />
                     {user?.role === 'ADMIN' && (

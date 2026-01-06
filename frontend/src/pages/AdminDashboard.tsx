@@ -203,7 +203,7 @@ export const AdminDashboard: React.FC = () => {
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-100 pb-8">
                 <div>
                     <h1 className="text-4xl font-black text-gray-900 tracking-tight">Admin <span className="text-primary-600 underline decoration-primary-200">Panel</span></h1>
-                    <p className="text-gray-500 mt-2 font-medium">Configure your league, manage teams, and track live results.</p>
+                    <p className="text-gray-500 mt-2 font-medium">Configure Team Respect League, manage teams, and track live results.</p>
                 </div>
                 <div className="flex flex-wrap gap-3">
                     <button

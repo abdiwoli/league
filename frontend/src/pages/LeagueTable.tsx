@@ -18,7 +18,7 @@ export const LeagueTable: React.FC = () => {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-gray-900">League Standings</h1>
+                <h1 className="text-2xl font-bold text-gray-900">Team Respect League Standings</h1>
                 <div className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full text-xs font-semibold">Live Updates</div>
             </div>
 

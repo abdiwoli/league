@@ -25,7 +25,7 @@ export const PlayerStats: React.FC = () => {
         <div className="space-y-10 pb-20 max-w-7xl mx-auto px-4">
             {/* Header */}
             <header>
-                <h1 className="text-4xl font-black text-gray-900 tracking-tight">Player <span className="text-primary-600 underline decoration-primary-200">Statistics</span></h1>
+                <h1 className="text-4xl font-black text-gray-900 tracking-tight">Team Respect Player <span className="text-primary-600 underline decoration-primary-200">Statistics</span></h1>
                 <p className="text-gray-500 mt-2 font-medium">Top performers, rankings, and individual records.</p>
             </header>
 
