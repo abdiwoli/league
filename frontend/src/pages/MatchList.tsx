@@ -481,7 +481,7 @@ export const MatchList: React.FC = () => {
                                                 <div className="flex md:hidden items-center justify-between gap-3">
                                                     {/* HOME */}
                                                     <div className="flex flex-col items-center gap-1 flex-1">
-                                                        <div className="w-30 h-30 bg-white rounded-lg p-2 border shadow">
+                                                        <div className="w-50 h-50 bg-white rounded-lg p-2 border shadow">
                                                             {m.homeTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.homeTeam.logoUrl)!}
@@ -516,7 +516,7 @@ export const MatchList: React.FC = () => {
 
                                                     {/* AWAY */}
                                                     <div className="flex flex-col items-center gap-1 flex-1">
-                                                        <div className="w-30 h-30 bg-white rounded-lg p-2 border shadow">
+                                                        <div className="w-50 h-50 bg-white rounded-lg p-2 border shadow">
                                                             {m.awayTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.awayTeam.logoUrl)!}
