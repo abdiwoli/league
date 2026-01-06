@@ -159,14 +159,14 @@ export const MatchList: React.FC = () => {
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     return (
-        <div className="max-w-7xl mx-auto px-4 pb-20 space-y-10">
+        <div className="max-w-7xl mx-auto px-4 pb-20 space-y-6 md:space-y-10">
             {/* ---------------- Header ---------------- */}
-            <div className="flex items-center justify-between border-b pb-6">
+            <div className="flex items-center justify-between border-b pb-4 md:pb-6">
                 <div>
-                    <h1 className="text-4xl font-black text-gray-900">
+                    <h1 className="text-2xl md:text-4xl font-black text-gray-900">
                         Match <span className="text-primary-600">Schedule</span>
                     </h1>
-                    <p className="text-gray-500 mt-1">
+                    <p className="text-gray-500 mt-1 text-sm md:text-base">
                         Official fixtures and results
                     </p>
                 </div>
@@ -174,117 +174,117 @@ export const MatchList: React.FC = () => {
                 {isAdmin && (
                     <button
                         onClick={() => setShowAdminControls(!showAdminControls)}
-                        className="flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-gray-800 transition-colors"
+                        className="flex items-center gap-2 bg-gray-900 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-bold hover:bg-gray-800 transition-colors text-sm md:text-base"
                     >
-                        <Settings2 size={18} />
-                        {showAdminControls ? 'Close' : 'Generate'}
+                        <Settings2 size={16} className="md:w-[18px] md:h-[18px]" />
+                        <span className="hidden sm:inline">{showAdminControls ? 'Close' : 'Generate'}</span>
                     </button>
                 )}
             </div>
 
             {/* ---------------- Admin Panel ---------------- */}
             {isAdmin && showAdminControls && (
-                <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-3xl p-8 space-y-6">
+                <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-2xl md:rounded-3xl p-4 md:p-8 space-y-4 md:space-y-6">
                     {/* Mode Selector */}
                     <div>
-                        <h3 className="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
-                            🎯 Scheduling Mode
+                        <h3 className="text-base md:text-lg font-black text-gray-900 mb-3 md:mb-4 flex items-center gap-2">
+                            🎯 Mode
                         </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-4">
                             <button
                                 onClick={() => setMode('WEEKEND_DOUBLE')}
                                 className={clsx(
-                                    'p-6 rounded-2xl border-2 transition-all text-left',
+                                    'p-4 md:p-6 rounded-xl md:rounded-2xl border-2 transition-all text-left',
                                     mode === 'WEEKEND_DOUBLE'
-                                        ? 'bg-primary-600 text-white border-primary-700 shadow-xl scale-105'
+                                        ? 'bg-primary-600 text-white border-primary-700 shadow-lg'
                                         : 'bg-white border-gray-200 hover:border-primary-300'
                                 )}
                             >
-                                <div className="flex items-center gap-3 mb-2">
-                                    <Zap size={24} className={mode === 'WEEKEND_DOUBLE' ? 'text-yellow-300' : 'text-primary-600'} />
-                                    <div className="font-black text-lg">Weekend Double</div>
+                                <div className="flex items-center gap-2 md:gap-3 mb-1 md:mb-2">
+                                    <Zap size={20} className={clsx('md:w-6 md:h-6', mode === 'WEEKEND_DOUBLE' ? 'text-yellow-300' : 'text-primary-600')} />
+                                    <div className="font-black text-sm md:text-lg">Weekend Double</div>
                                 </div>
-                                <p className={clsx('text-sm', mode === 'WEEKEND_DOUBLE' ? 'text-white/90' : 'text-gray-600')}>
-                                    Home matches Friday, away matches Saturday. Perfect for 3 teams.
+                                <p className={clsx('text-xs md:text-sm', mode === 'WEEKEND_DOUBLE' ? 'text-white/90' : 'text-gray-600')}>
+                                    Home Fri, away Sat
                                 </p>
                             </button>
 
                             <button
                                 onClick={() => setMode('TRADITIONAL')}
                                 className={clsx(
-                                    'p-6 rounded-2xl border-2 transition-all text-left',
+                                    'p-4 md:p-6 rounded-xl md:rounded-2xl border-2 transition-all text-left',
                                     mode === 'TRADITIONAL'
-                                        ? 'bg-primary-600 text-white border-primary-700 shadow-xl scale-105'
+                                        ? 'bg-primary-600 text-white border-primary-700 shadow-lg'
                                         : 'bg-white border-gray-200 hover:border-primary-300'
                                 )}
                             >
-                                <div className="flex items-center gap-3 mb-2">
-                                    <Calendar size={24} className={mode === 'TRADITIONAL' ? 'text-yellow-300' : 'text-primary-600'} />
-                                    <div className="font-black text-lg">Traditional</div>
+                                <div className="flex items-center gap-2 md:gap-3 mb-1 md:mb-2">
+                                    <Calendar size={20} className={clsx('md:w-6 md:h-6', mode === 'TRADITIONAL' ? 'text-yellow-300' : 'text-primary-600')} />
+                                    <div className="font-black text-sm md:text-lg">Traditional</div>
                                 </div>
-                                <p className={clsx('text-sm', mode === 'TRADITIONAL' ? 'text-white/90' : 'text-gray-600')}>
-                                    Single round-robin distributed across multiple days.
+                                <p className={clsx('text-xs md:text-sm', mode === 'TRADITIONAL' ? 'text-white/90' : 'text-gray-600')}>
+                                    Single round-robin
                                 </p>
                             </button>
 
                             <button
                                 onClick={() => setMode('CUSTOM')}
                                 className={clsx(
-                                    'p-6 rounded-2xl border-2 transition-all text-left',
+                                    'p-4 md:p-6 rounded-xl md:rounded-2xl border-2 transition-all text-left',
                                     mode === 'CUSTOM'
-                                        ? 'bg-primary-600 text-white border-primary-700 shadow-xl scale-105'
+                                        ? 'bg-primary-600 text-white border-primary-700 shadow-lg'
                                         : 'bg-white border-gray-200 hover:border-primary-300'
                                 )}
                             >
-                                <div className="flex items-center gap-3 mb-2">
-                                    <Sliders size={24} className={mode === 'CUSTOM' ? 'text-yellow-300' : 'text-primary-600'} />
-                                    <div className="font-black text-lg">Custom</div>
+                                <div className="flex items-center gap-2 md:gap-3 mb-1 md:mb-2">
+                                    <Sliders size={20} className={clsx('md:w-6 md:h-6', mode === 'CUSTOM' ? 'text-yellow-300' : 'text-primary-600')} />
+                                    <div className="font-black text-sm md:text-lg">Custom</div>
                                 </div>
-                                <p className={clsx('text-sm', mode === 'CUSTOM' ? 'text-white/90' : 'text-gray-600')}>
-                                    Full control over all scheduling parameters.
+                                <p className={clsx('text-xs md:text-sm', mode === 'CUSTOM' ? 'text-white/90' : 'text-gray-600')}>
+                                    Full control
                                 </p>
                             </button>
                         </div>
                     </div>
 
                     {/* Common Settings */}
-                    <div className="bg-white/80 backdrop-blur rounded-2xl p-6 space-y-4">
-                        <h4 className="font-black text-gray-900 mb-4">⚙️ Basic Settings</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-white/80 backdrop-blur rounded-xl md:rounded-2xl p-4 md:p-6 space-y-3 md:space-y-4">
+                        <h4 className="font-black text-gray-900 mb-3 md:mb-4 text-sm md:text-base">⚙️ Settings</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2">
+                                <label className="block text-xs md:text-sm font-bold text-gray-700 mb-1 md:mb-2">
                                     📅 Start Date
                                 </label>
                                 <input
                                     type="date"
                                     value={startDate}
                                     onChange={e => setStartDate(e.target.value)}
-                                    className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold"
+                                    className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold text-sm md:text-base"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2">
-                                    🔄 Number of Rounds
+                                <label className="block text-xs md:text-sm font-bold text-gray-700 mb-1 md:mb-2">
+                                    🔄 Rounds
                                 </label>
                                 <input
                                     type="number"
                                     value={rounds}
                                     onChange={e => setRounds(Math.max(1, +e.target.value || 1))}
                                     min="1"
-                                    className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold"
+                                    className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold text-sm md:text-base"
                                 />
                             </div>
                             {(mode === 'WEEKEND_DOUBLE' || mode === 'TRADITIONAL') && (
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                                        ⏸️ Days Between Rounds
+                                    <label className="block text-xs md:text-sm font-bold text-gray-700 mb-1 md:mb-2">
+                                        ⏸️ Rest Days
                                     </label>
                                     <input
                                         type="number"
                                         value={daysBetweenRounds}
                                         onChange={e => setDaysBetweenRounds(Math.max(0, +e.target.value || 0))}
                                         min="0"
-                                        className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold"
+                                        className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold text-sm md:text-base"
                                     />
                                 </div>
                             )}
@@ -293,10 +293,10 @@ export const MatchList: React.FC = () => {
 
                     {/* Mode-specific Settings */}
                     {mode === 'TRADITIONAL' && (
-                        <div className="bg-white/80 backdrop-blur rounded-2xl p-6 space-y-4">
-                            <h4 className="font-black text-gray-900 mb-4">📊 Traditional Mode Settings</h4>
+                        <div className="bg-white/80 backdrop-blur rounded-xl md:rounded-2xl p-4 md:p-6 space-y-3 md:space-y-4">
+                            <h4 className="font-black text-gray-900 mb-3 md:mb-4 text-sm md:text-base">📊 Traditional</h4>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2">
+                                <label className="block text-xs md:text-sm font-bold text-gray-700 mb-1 md:mb-2">
                                     Match Days Per Round
                                 </label>
                                 <input
@@ -304,53 +304,50 @@ export const MatchList: React.FC = () => {
                                     value={matchDaysPerRound}
                                     onChange={e => setMatchDaysPerRound(Math.max(1, +e.target.value || 1))}
                                     min="1"
-                                    className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold"
+                                    className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold text-sm md:text-base"
                                 />
-                                <p className="text-xs text-gray-500 mt-1">
-                                    Number of days to distribute matches across in each round
-                                </p>
                             </div>
                         </div>
                     )}
 
                     {mode === 'CUSTOM' && (
-                        <div className="bg-white/80 backdrop-blur rounded-2xl p-6 space-y-4">
-                            <h4 className="font-black text-gray-900 mb-4">🎛️ Custom Mode Settings</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="bg-white/80 backdrop-blur rounded-xl md:rounded-2xl p-4 md:p-6 space-y-3 md:space-y-4">
+                            <h4 className="font-black text-gray-900 mb-3 md:mb-4 text-sm md:text-base">🎛️ Custom</h4>
+                            <div className="grid grid-cols-3 gap-2 md:gap-4">
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                                        Gap Days
+                                    <label className="block text-xs font-bold text-gray-700 mb-1 md:mb-2">
+                                        Gap
                                     </label>
                                     <input
                                         type="number"
                                         value={gapDays}
                                         onChange={e => setGapDays(Math.max(0, +e.target.value || 0))}
                                         min="0"
-                                        className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold"
+                                        className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold text-sm md:text-base"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                                        Play Days
+                                    <label className="block text-xs font-bold text-gray-700 mb-1 md:mb-2">
+                                        Play
                                     </label>
                                     <input
                                         type="number"
                                         value={playDays}
                                         onChange={e => setPlayDays(Math.max(1, +e.target.value || 1))}
                                         min="1"
-                                        className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold"
+                                        className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold text-sm md:text-base"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                                        Rest Days
+                                    <label className="block text-xs font-bold text-gray-700 mb-1 md:mb-2">
+                                        Rest
                                     </label>
                                     <input
                                         type="number"
                                         value={restDays}
                                         onChange={e => setRestDays(Math.max(0, +e.target.value || 0))}
                                         min="0"
-                                        className="w-full p-3 rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold"
+                                        className="w-full p-2 md:p-3 rounded-lg md:rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:outline-none font-semibold text-sm md:text-base"
                                     />
                                 </div>
                             </div>
@@ -358,17 +355,17 @@ export const MatchList: React.FC = () => {
                     )}
 
                     {/* Off Days Selector */}
-                    <div className="bg-white/80 backdrop-blur rounded-2xl p-6">
-                        <h4 className="font-black text-gray-900 mb-4">🚫 Off Days (Optional)</h4>
-                        <div className="flex gap-2 flex-wrap">
+                    <div className="bg-white/80 backdrop-blur rounded-xl md:rounded-2xl p-4 md:p-6">
+                        <h4 className="font-black text-gray-900 mb-3 md:mb-4 text-sm md:text-base">🚫 Off Days</h4>
+                        <div className="flex gap-1 md:gap-2 flex-wrap">
                             {dayNames.map((d, i) => (
                                 <button
                                     key={d}
                                     onClick={() => toggleOffDay(i)}
                                     className={clsx(
-                                        'px-4 py-2 rounded-xl font-bold transition-all',
+                                        'px-3 py-2 md:px-4 md:py-2 rounded-lg md:rounded-xl font-bold transition-all text-xs md:text-sm',
                                         offDays.includes(i)
-                                            ? 'bg-red-500 text-white shadow-lg scale-105'
+                                            ? 'bg-red-500 text-white shadow-lg'
                                             : 'bg-white border-2 border-gray-200 hover:border-red-300'
                                     )}
                                 >
@@ -376,26 +373,23 @@ export const MatchList: React.FC = () => {
                                 </button>
                             ))}
                         </div>
-                        <p className="text-xs text-gray-500 mt-2">
-                            Click to mark days when matches should NOT be scheduled
-                        </p>
                     </div>
 
                     {/* Preview */}
                     {showPreview && previewDates.length > 0 && (
-                        <div className="bg-white/80 backdrop-blur rounded-2xl p-6">
-                            <h4 className="font-black text-gray-900 mb-4">📋 Schedule Preview</h4>
-                            <div className="space-y-3">
+                        <div className="bg-white/80 backdrop-blur rounded-xl md:rounded-2xl p-4 md:p-6">
+                            <h4 className="font-black text-gray-900 mb-3 md:mb-4 text-sm md:text-base">📋 Preview</h4>
+                            <div className="space-y-2 md:space-y-3">
                                 {previewDates.map((p) => (
-                                    <div key={p.round} className="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
-                                        <div className="w-12 h-12 bg-primary-600 text-white rounded-xl flex items-center justify-center font-black">
+                                    <div key={p.round} className="flex items-center gap-2 md:gap-4 p-2 md:p-3 bg-gray-50 rounded-lg md:rounded-xl">
+                                        <div className="w-8 h-8 md:w-12 md:h-12 bg-primary-600 text-white rounded-lg md:rounded-xl flex items-center justify-center font-black text-sm md:text-base flex-shrink-0">
                                             {p.round}
                                         </div>
-                                        <div className="flex-1">
-                                            <div className="font-bold text-gray-900">
-                                                Round {p.round}: {p.dates.join(' + ')}
+                                        <div className="flex-1 min-w-0">
+                                            <div className="font-bold text-gray-900 text-xs md:text-sm truncate">
+                                                R{p.round}: {p.dates.join(' + ')}
                                             </div>
-                                            <div className="text-sm text-gray-600">
+                                            <div className="text-xs text-gray-600">
                                                 {p.matchCount} matches
                                             </div>
                                         </div>
@@ -406,26 +400,26 @@ export const MatchList: React.FC = () => {
                     )}
 
                     {/* Action Buttons */}
-                    <div className="flex gap-4">
+                    <div className="flex flex-col md:flex-row gap-3 md:gap-4">
                         <button
                             onClick={() => setShowPreview(!showPreview)}
-                            className="flex-1 bg-white border-2 border-primary-600 text-primary-600 px-6 py-4 rounded-2xl font-black hover:bg-primary-50 transition-colors"
+                            className="flex-1 bg-white border-2 border-primary-600 text-primary-600 px-4 md:px-6 py-3 md:py-4 rounded-xl md:rounded-2xl font-black hover:bg-primary-50 transition-colors text-sm md:text-base"
                         >
-                            {showPreview ? 'Hide Preview' : 'Preview Schedule'}
+                            {showPreview ? 'Hide' : 'Preview'}
                         </button>
                         <button
                             onClick={() => generateSchedule.mutate()}
                             disabled={generateSchedule.isPending || !teams || teams.length < 2}
-                            className="flex-1 bg-primary-600 text-white px-6 py-4 rounded-2xl font-black hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-1 bg-primary-600 text-white px-4 md:px-6 py-3 md:py-4 rounded-xl md:rounded-2xl font-black hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
                         >
-                            {generateSchedule.isPending ? 'Generating...' : 'Generate Schedule'}
+                            {generateSchedule.isPending ? 'Generating...' : 'Generate'}
                         </button>
                     </div>
 
                     {teams && teams.length < 2 && (
-                        <div className="bg-yellow-100 border-2 border-yellow-300 rounded-xl p-4 text-center">
-                            <p className="text-yellow-800 font-bold">
-                                ⚠️ You need at least 2 teams to generate a schedule
+                        <div className="bg-yellow-100 border-2 border-yellow-300 rounded-xl p-3 md:p-4 text-center">
+                            <p className="text-yellow-800 font-bold text-xs md:text-sm">
+                                ⚠️ Need at least 2 teams
                             </p>
                         </div>
                     )}
@@ -434,12 +428,12 @@ export const MatchList: React.FC = () => {
 
             {/* ---------------- MATCHES ---------------- */}
             {sortedRounds.length === 0 && !showAdminControls && (
-                <div className="text-center py-20">
-                    <p className="text-gray-400 text-xl font-bold">No matches scheduled yet</p>
+                <div className="text-center py-12 md:py-20">
+                    <p className="text-gray-400 text-lg md:text-xl font-bold">No matches scheduled yet</p>
                     {isAdmin && (
                         <button
                             onClick={() => setShowAdminControls(true)}
-                            className="mt-4 bg-primary-600 text-white px-6 py-3 rounded-2xl font-bold hover:bg-primary-700"
+                            className="mt-4 bg-primary-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-bold hover:bg-primary-700 text-sm md:text-base"
                         >
                             Generate Schedule
                         </button>
@@ -450,27 +444,27 @@ export const MatchList: React.FC = () => {
             {sortedRounds.map(roundNum => (
                 <section
                     key={roundNum}
-                    className="bg-slate-100 border-2 border-slate-200 rounded-[3rem] p-6 md:p-8"
+                    className="bg-slate-100 border-2 border-slate-200 rounded-2xl md:rounded-[3rem] p-4 md:p-6 lg:p-8"
                 >
                     {/* Round Header */}
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-16 h-16 rounded-2xl bg-primary-600 text-white flex items-center justify-center text-2xl font-black">
+                    <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
+                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-primary-600 text-white flex items-center justify-center text-xl md:text-2xl font-black">
                             {roundNum}
                         </div>
-                        <h2 className="text-2xl font-black">Round {roundNum}</h2>
+                        <h2 className="text-xl md:text-2xl font-black">Round {roundNum}</h2>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-4 md:space-y-6">
                         {Object.entries(roundsMap[roundNum]).map(
                             ([dateKey, dayMatches]) => (
-                                <div key={dateKey} className="space-y-4">
-                                    <div className="flex items-center gap-3 text-gray-600 font-bold">
-                                        <Clock size={16} />
-                                        {format(parseISO(dateKey), 'EEEE, MMMM do')}
+                                <div key={dateKey} className="space-y-3 md:space-y-4">
+                                    <div className="flex items-center gap-2 md:gap-3 text-gray-600 font-bold text-sm md:text-base">
+                                        <Clock size={14} className="md:w-4 md:h-4" />
+                                        {format(parseISO(dateKey), 'EEE, MMM do')}
                                     </div>
 
-                                    {/* FULL WIDTH MATCH CARDS */}
-                                    <div className="flex flex-col gap-6">
+                                    {/* MATCH CARDS - Mobile Optimized */}
+                                    <div className="flex flex-col gap-4 md:gap-6">
                                         {dayMatches.map((m: any) => (
                                             <div
                                                 key={m.id}
@@ -478,13 +472,68 @@ export const MatchList: React.FC = () => {
                           w-full
                           bg-gradient-to-r from-white via-slate-50 to-white
                           border-2 border-slate-300
-                          rounded-[2.5rem]
-                          p-6 md:p-8 lg:p-10
-                          shadow-xl
+                          rounded-2xl md:rounded-[2.5rem]
+                          p-4 md:p-6 lg:p-10
+                          shadow-lg md:shadow-xl
                         "
                                             >
-                                                <div className="flex items-center justify-between gap-10">
+                                                {/* Mobile: Vertical Stack */}
+                                                <div className="flex md:hidden flex-col gap-4">
+                                                    {/* HOME */}
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-16 h-16 bg-white rounded-xl p-2 border shadow flex-shrink-0">
+                                                            {m.homeTeam.logoUrl && (
+                                                                <img
+                                                                    src={getImageUrl(m.homeTeam.logoUrl)!}
+                                                                    className="w-full h-full object-contain"
+                                                                    alt={m.homeTeam.name}
+                                                                />
+                                                            )}
+                                                        </div>
+                                                        <div className="text-lg font-black flex-1 min-w-0">
+                                                            {m.homeTeam.name}
+                                                        </div>
+                                                    </div>
 
+                                                    {/* SCORE */}
+                                                    <div className="flex items-center justify-center">
+                                                        {m.status === 'PLAYED' ? (
+                                                            <div className="bg-gray-900 text-white text-2xl font-black px-4 py-2 rounded-xl">
+                                                                {m.homeScore} – {m.awayScore}
+                                                            </div>
+                                                        ) : (
+                                                            <div className="text-gray-400 text-lg font-black tracking-widest">
+                                                                VS
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* AWAY */}
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-16 h-16 bg-white rounded-xl p-2 border shadow flex-shrink-0">
+                                                            {m.awayTeam.logoUrl && (
+                                                                <img
+                                                                    src={getImageUrl(m.awayTeam.logoUrl)!}
+                                                                    className="w-full h-full object-contain"
+                                                                    alt={m.awayTeam.name}
+                                                                />
+                                                            )}
+                                                        </div>
+                                                        <div className="text-lg font-black flex-1 min-w-0">
+                                                            {m.awayTeam.name}
+                                                        </div>
+                                                    </div>
+
+                                                    {m.status === 'PLAYED' && (
+                                                        <div className="flex items-center justify-center gap-1 text-green-600 text-xs font-bold">
+                                                            <CheckCircle size={12} />
+                                                            FULL TIME
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Desktop: Horizontal Layout */}
+                                                <div className="hidden md:flex items-center justify-between gap-10">
                                                     {/* HOME */}
                                                     <div className="flex items-center gap-6 w-1/3">
                                                         <div className="w-28 h-28 lg:w-36 lg:h-36 bg-white rounded-2xl p-3 border shadow">
@@ -535,7 +584,6 @@ export const MatchList: React.FC = () => {
                                                             )}
                                                         </div>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         ))}
