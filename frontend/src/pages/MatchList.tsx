@@ -448,10 +448,13 @@ export const MatchList: React.FC = () => {
                 >
                     {/* Round Header */}
                     <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
-                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-primary-600 text-white flex items-center justify-center text-xl md:text-2xl font-black">
+                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-primary-600 text-white flex items-center justify-center text-xl md:text-2xl font-black shadow-lg shadow-primary-200">
                             {roundNum}
                         </div>
-                        <h2 className="text-xl md:text-2xl font-black">Round {roundNum}</h2>
+                        <div>
+                            <span className="block text-xs md:text-sm font-bold text-gray-400 uppercase tracking-widest">Team Respect League</span>
+                            <h2 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tight leading-none">Round {roundNum}</h2>
+                        </div>
                     </div>
 
                     <div className="space-y-4 md:space-y-6">
