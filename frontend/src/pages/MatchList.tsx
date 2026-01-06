@@ -490,7 +490,7 @@ export const MatchList: React.FC = () => {
                                                                 />
                                                             )}
                                                         </div>
-                                                        <div className="text-sm font-black truncate">
+                                                        <div className="text-xs font-black break-words">
                                                             {m.homeTeam.name}
                                                         </div>
                                                     </div>
@@ -516,7 +516,7 @@ export const MatchList: React.FC = () => {
 
                                                     {/* AWAY */}
                                                     <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
-                                                        <div className="text-sm font-black truncate text-right">
+                                                        <div className="text-xs font-black break-words text-right">
                                                             {m.awayTeam.name}
                                                         </div>
                                                         <div className="w-12 h-12 bg-white rounded-lg p-1.5 border shadow flex-shrink-0">
