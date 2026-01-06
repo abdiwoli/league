@@ -478,10 +478,10 @@ export const MatchList: React.FC = () => {
                         "
                                             >
                                                 {/* Mobile: Horizontal Compact */}
-                                                <div className="flex md:hidden items-center justify-between gap-2">
+                                                <div className="flex md:hidden items-center justify-between gap-3">
                                                     {/* HOME */}
-                                                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                                                        <div className="w-12 h-12 bg-white rounded-lg p-1.5 border shadow flex-shrink-0">
+                                                    <div className="flex flex-col items-center gap-1 flex-1">
+                                                        <div className="w-14 h-14 bg-white rounded-lg p-2 border shadow">
                                                             {m.homeTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.homeTeam.logoUrl)!}
@@ -490,7 +490,7 @@ export const MatchList: React.FC = () => {
                                                                 />
                                                             )}
                                                         </div>
-                                                        <div className="text-xs font-black break-words">
+                                                        <div className="text-xs font-black text-center break-words w-full">
                                                             {m.homeTeam.name}
                                                         </div>
                                                     </div>
@@ -515,11 +515,8 @@ export const MatchList: React.FC = () => {
                                                     </div>
 
                                                     {/* AWAY */}
-                                                    <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
-                                                        <div className="text-xs font-black break-words text-right">
-                                                            {m.awayTeam.name}
-                                                        </div>
-                                                        <div className="w-12 h-12 bg-white rounded-lg p-1.5 border shadow flex-shrink-0">
+                                                    <div className="flex flex-col items-center gap-1 flex-1">
+                                                        <div className="w-14 h-14 bg-white rounded-lg p-2 border shadow">
                                                             {m.awayTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.awayTeam.logoUrl)!}
@@ -527,6 +524,9 @@ export const MatchList: React.FC = () => {
                                                                     alt={m.awayTeam.name}
                                                                 />
                                                             )}
+                                                        </div>
+                                                        <div className="text-xs font-black text-center break-words w-full">
+                                                            {m.awayTeam.name}
                                                         </div>
                                                     </div>
                                                 </div>
