@@ -1,14 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { addDays, format, parseISO, startOfToday } from 'date-fns';
-import {
-    Calendar,
-    CheckCircle,
-    Clock,
-    Info,
-    RefreshCw,
-    Settings2
-} from 'lucide-react';
+import { CheckCircle, Clock, RefreshCw, Settings2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api, { getImageUrl } from '../lib/api';
@@ -30,8 +23,6 @@ export const MatchList: React.FC = () => {
     const [showAdminControls, setShowAdminControls] = useState(false);
     const [rounds, setRounds] = useState(1);
     const [gapDays, setGapDays] = useState(1);
-    const [playDays, setPlayDays] = useState(2);
-    const [restDays, setRestDays] = useState(1);
     const [startDate, setStartDate] = useState(
         format(addDays(startOfToday(), 1), 'yyyy-MM-dd')
     );
@@ -43,9 +34,7 @@ export const MatchList: React.FC = () => {
                 rounds,
                 daysBetweenMatches: gapDays,
                 startDate,
-                offDays,
-                playDays,
-                restDays
+                offDays
             }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['matches'] });
