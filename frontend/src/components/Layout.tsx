@@ -1,4 +1,4 @@
-import { Calendar, LayoutDashboard, LogOut, Settings, Shield, Table2, Users } from 'lucide-react';
+import { Calendar, LayoutDashboard, LogOut, Settings, Shield, Table2, Trophy, Users } from 'lucide-react';
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -32,6 +32,7 @@ export const Layout: React.FC = () => {
                 <nav className="flex-1 py-6 px-3 space-y-1">
                     <NavItem to="/" icon={<Table2 />} label="League Table" active={isActive('/')} />
                     <NavItem to="/matches" icon={<Calendar />} label="Matches" active={isActive('/matches')} />
+                    <NavItem to="/stats" icon={<Trophy />} label="Player Stats" active={isActive('/stats')} />
                     {user?.role === 'ADMIN' && (
                         <>
                             <NavItem to="/admin" icon={<LayoutDashboard />} label="Dashboard" active={isActive('/admin')} />
@@ -66,6 +67,7 @@ export const Layout: React.FC = () => {
             <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around p-2 z-50 safe-area-pb">
                 <MobileNavItem to="/" icon={<Table2 />} label="Table" active={isActive('/')} />
                 <MobileNavItem to="/matches" icon={<Calendar />} label="Matches" active={isActive('/matches')} />
+                <MobileNavItem to="/stats" icon={<Trophy />} label="Stats" active={isActive('/stats')} />
                 {user?.role === 'ADMIN' && (
                     <>
                         <MobileNavItem to="/admin" icon={<LayoutDashboard />} label="Admin" active={isActive('/admin')} />

@@ -6,6 +6,7 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { LeagueTable } from './pages/LeagueTable';
 import { Login } from './pages/Login';
 import { MatchList } from './pages/MatchList';
+import { PlayerStats } from './pages/PlayerStats';
 import { ProfileSettings } from './pages/ProfileSettings';
 import { Register } from './pages/Register';
 import { UserManagement } from './pages/UserManagement';
@@ -25,6 +26,7 @@ const App: React.FC = () => {
       <Route path="/" element={<Layout />}>
         <Route index element={<LeagueTable />} />
         <Route path="matches" element={<MatchList />} />
+        <Route path="stats" element={<PlayerStats />} />
         <Route path="admin" element={
           <AdminRoute>
             <AdminDashboard />
