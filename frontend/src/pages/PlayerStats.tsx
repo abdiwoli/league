@@ -182,21 +182,21 @@ export const PlayerStats: React.FC = () => {
                     <table className="w-full">
                         <thead>
                             <tr className="bg-gray-50/50 border-b border-gray-100">
-                                <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Rank</th>
-                                <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Player</th>
-                                <th className="px-8 py-5 text-left text-xs font-black text-gray-400 uppercase tracking-wider">Team</th>
-                                <th className="px-8 py-5 text-center text-xs font-black text-gray-400 uppercase tracking-wider">Rating</th>
-                                <th className="px-8 py-5 text-center text-xs font-black text-gray-400 uppercase tracking-wider">Goals</th>
-                                <th className="px-8 py-5 text-center text-xs font-black text-gray-400 uppercase tracking-wider">Assists</th>
-                                <th className="px-8 py-5 text-center text-xs font-black text-gray-400 uppercase tracking-wider">Cards</th>
-                                <th className="px-8 py-5 text-center text-xs font-black text-gray-400 uppercase tracking-wider">Matches</th>
+                                <th className="px-2 md:px-8 py-3 md:py-5 text-left text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">Rank</th>
+                                <th className="px-2 md:px-8 py-3 md:py-5 text-left text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">Player</th>
+                                <th className="px-2 md:px-8 py-3 md:py-5 text-left text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">Team</th>
+                                <th className="px-2 md:px-8 py-3 md:py-5 text-center text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">Rat</th>
+                                <th className="px-2 md:px-8 py-3 md:py-5 text-center text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">G</th>
+                                <th className="px-2 md:px-8 py-3 md:py-5 text-center text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">A</th>
+                                <th className="px-2 md:px-8 py-3 md:py-5 text-center text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider hidden sm:table-cell">Cards</th>
+                                <th className="px-2 md:px-8 py-3 md:py-5 text-center text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider hidden sm:table-cell">M</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                             {filteredStats?.map((player: any, index: number) => (
                                 <tr key={player.id} className="hover:bg-gray-50/50 transition-colors group">
-                                    <td className="px-8 py-4">
-                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-sm
+                                    <td className="px-2 md:px-8 py-3 md:py-4">
+                                        <div className={`w-6 h-6 md:w-8 md:h-8 rounded-lg flex items-center justify-center font-black text-xs md:text-sm
                                             ${index === 0 ? 'bg-yellow-100 text-yellow-600' :
                                                 index === 1 ? 'bg-gray-100 text-gray-600' :
                                                     index === 2 ? 'bg-orange-100 text-orange-600' : 'text-gray-400'}`}
@@ -204,33 +204,33 @@ export const PlayerStats: React.FC = () => {
                                             {index + 1}
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center font-black text-gray-400 group-hover:bg-white group-hover:shadow-md transition-all">
+                                    <td className="px-2 md:px-8 py-3 md:py-4">
+                                        <div className="flex items-center gap-2 md:gap-3">
+                                            <div className="hidden sm:flex w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gray-100 items-center justify-center font-black text-gray-400 group-hover:bg-white group-hover:shadow-md transition-all">
                                                 {player.number}
                                             </div>
                                             <div>
-                                                <p className="font-bold text-gray-900">{player.name}</p>
-                                                <p className="text-xs text-gray-400 font-medium">#{player.number}</p>
+                                                <p className="font-bold text-xs md:text-sm text-gray-900 truncate max-w-[80px] sm:max-w-none">{player.name}</p>
+                                                <p className="text-[10px] md:text-xs text-gray-400 font-medium sm:hidden">#{player.number}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4">
+                                    <td className="px-2 md:px-8 py-3 md:py-4">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-6 h-6 rounded-md bg-gray-50 border border-gray-100 overflow-hidden">
+                                            <div className="hidden sm:block w-6 h-6 rounded-md bg-gray-50 border border-gray-100 overflow-hidden">
                                                 {player.team.logoUrl && <img src={getImageUrl(player.team.logoUrl)!} className="w-full h-full object-cover" />}
                                             </div>
-                                            <span className="text-sm font-bold text-gray-600">{player.team.name}</span>
+                                            <span className="text-[10px] md:text-sm font-bold text-gray-600 truncate max-w-[60px] sm:max-w-none">{player.team.name}</span>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center">
-                                        <span className="inline-block px-3 py-1 rounded-lg bg-gray-900 text-white font-black text-sm shadow-lg shadow-gray-200">
+                                    <td className="px-2 md:px-8 py-3 md:py-4 text-center">
+                                        <span className="inline-block px-2 py-0.5 md:px-3 md:py-1 rounded-md md:rounded-lg bg-gray-900 text-white font-black text-[10px] md:text-sm shadow-lg shadow-gray-200">
                                             {player.rating}
                                         </span>
                                     </td>
-                                    <td className="px-8 py-4 text-center font-bold text-gray-600">{player.goals}</td>
-                                    <td className="px-8 py-4 text-center font-bold text-gray-600">{player.assists}</td>
-                                    <td className="px-8 py-4 text-center">
+                                    <td className="px-2 md:px-8 py-3 md:py-4 text-center font-bold text-xs md:text-sm text-gray-600">{player.goals}</td>
+                                    <td className="px-2 md:px-8 py-3 md:py-4 text-center font-bold text-xs md:text-sm text-gray-600">{player.assists}</td>
+                                    <td className="px-2 md:px-8 py-3 md:py-4 text-center hidden sm:table-cell">
                                         <div className="flex items-center justify-center gap-2">
                                             {player.yellowCards > 0 && (
                                                 <span className="px-2 py-0.5 rounded bg-yellow-100 text-yellow-700 text-xs font-bold border border-yellow-200">
@@ -247,7 +247,7 @@ export const PlayerStats: React.FC = () => {
                                             )}
                                         </div>
                                     </td>
-                                    <td className="px-8 py-4 text-center font-bold text-gray-400">{player.matchesPlayed}</td>
+                                    <td className="px-2 md:px-8 py-3 md:py-4 text-center font-bold text-xs md:text-sm text-gray-400 hidden sm:table-cell">{player.matchesPlayed}</td>
                                 </tr>
                             ))}
                         </tbody>
