@@ -13,6 +13,9 @@ export const AdminDashboard: React.FC = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
+    // Schedule Generation State
+    const [scheduleWeeks, setScheduleWeeks] = useState(4);
+
     // Queries
     const { data: teams } = useQuery({ queryKey: ['teams'], queryFn: () => api.get('/teams').then(r => r.data) });
     const { data: matches } = useQuery({ queryKey: ['matches'], queryFn: () => api.get('/matches').then(r => r.data) });
@@ -106,6 +109,17 @@ export const AdminDashboard: React.FC = () => {
         }
     });
 
+    const generateSchedule = useMutation({
+        mutationFn: (weeks: number) => api.post('/matches/schedule', { weeks }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['matches'] });
+            alert('Schedule generated successfully!');
+        },
+        onError: (err: any) => {
+            alert('Failed to generate schedule: ' + (err.response?.data?.message || err.message));
+        }
+    });
+
     // Local state for editing matches
     const [editingScores, setEditingScores] = useState<Record<string, { h: number, a: number }>>({});
 
@@ -175,6 +189,78 @@ export const AdminDashboard: React.FC = () => {
                     </div>
                 </div>
             </header>
+
+            {/* Schedule Generation Section */}
+            <section className="glass p-8 rounded-[2.5rem] border-2 border-white shadow-2xl shadow-gray-200/40">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex-1">
+                        <h2 className="text-2xl font-black text-gray-800 mb-2 flex items-center">
+                            <Calendar size={24} className="mr-3 text-primary-500" />
+                            Match Schedule Generator
+                        </h2>
+                        <p className="text-gray-500 font-medium">
+                            Generate Friday/Saturday matches with automatic home/away rotation
+                        </p>
+                        {matches && matches.length > 0 && (
+                            <div className="mt-4 flex flex-wrap gap-3">
+                                <div className="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-sm font-bold border border-blue-100">
+                                    📅 {matches.length} Total Matches
+                                </div>
+                                <div className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-sm font-bold border border-green-100">
+                                    ✅ {matches.filter((m: any) => m.status === 'PLAYED').length} Played
+                                </div>
+                                <div className="px-4 py-2 bg-orange-50 text-orange-600 rounded-xl text-sm font-bold border border-orange-100">
+                                    ⏳ {matches.filter((m: any) => m.status === 'SCHEDULED').length} Scheduled
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex flex-col gap-4">
+                        <div className="flex items-center gap-3">
+                            <label className="text-sm font-bold text-gray-600">Weeks:</label>
+                            <input
+                                type="number"
+                                min="1"
+                                max="20"
+                                value={scheduleWeeks}
+                                onChange={(e) => setScheduleWeeks(parseInt(e.target.value) || 1)}
+                                className="w-20 px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all font-bold text-center"
+                            />
+                        </div>
+                        <button
+                            onClick={() => {
+                                if (teams?.length !== 3) {
+                                    alert('You need exactly 3 teams to generate the schedule!');
+                                    return;
+                                }
+                                if (matches?.length > 0) {
+                                    if (!confirm('This will clear existing matches and generate a new schedule. Continue?')) return;
+                                }
+                                generateSchedule.mutate(scheduleWeeks);
+                            }}
+                            disabled={generateSchedule.isPending || teams?.length !== 3}
+                            className="px-8 py-4 bg-primary-600 text-white rounded-2xl font-black hover:bg-primary-700 transition-all shadow-xl shadow-primary-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                            {generateSchedule.isPending ? (
+                                <>
+                                    <RefreshCw size={18} className="animate-spin" />
+                                    <span>Generating...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Calendar size={18} />
+                                    <span>Generate Schedule</span>
+                                </>
+                            )}
+                        </button>
+                        {teams?.length !== 3 && (
+                            <p className="text-xs text-red-500 font-bold text-center">
+                                ⚠️ Requires exactly 3 teams
+                            </p>
+                        )}
+                    </div>
+                </div>
+            </section>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
                 {/* Team Management Sidebar */}
@@ -307,83 +393,95 @@ export const AdminDashboard: React.FC = () => {
                     </div>
 
                     <div className="space-y-12">
-                        {groupedMatches && Object.entries(groupedMatches).map(([matchday, dayMatches]: [string, any]) => (
-                            <section key={matchday} className="space-y-6">
-                                <div className="flex items-center gap-4 px-2">
-                                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-100 to-gray-100"></div>
-                                    <h3 className="text-lg font-black text-gray-400 uppercase tracking-[0.2em] flex items-center">
-                                        Matchday <span className="text-gray-900 ml-2">{matchday}</span>
-                                    </h3>
-                                    <div className="h-px flex-1 bg-gradient-to-l from-transparent via-gray-100 to-gray-100"></div>
-                                </div>
+                        {groupedMatches && Object.entries(groupedMatches).map(([matchday, dayMatches]: [string, any]) => {
+                            const firstMatch = dayMatches[0];
+                            const matchDate = new Date(firstMatch.date);
+                            const dayOfWeek = matchDate.toLocaleDateString('en-US', { weekday: 'long' });
+                            const dateStr = matchDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-                                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                                    {dayMatches.map((m: any) => (
-                                        <div key={m.id} className="relative group overflow-hidden p-6 bg-white border border-gray-100 rounded-[2rem] shadow-sm hover:shadow-xl hover:shadow-primary-500/5 hover:-translate-y-1 transition-all">
-                                            <div className="flex items-center justify-between gap-6">
-                                                {/* Home Team */}
-                                                <div className="flex-1 flex flex-col items-center gap-3">
-                                                    <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center p-3 border border-gray-100 shadow-inner overflow-hidden">
-                                                        {m.homeTeam.logoUrl ? (
-                                                            <img src={getImageUrl(m.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
-                                                        ) : (
-                                                            <ImageIcon className="text-gray-200" size={24} />
-                                                        )}
-                                                    </div>
-                                                    <span className="text-sm font-black text-gray-800 text-center uppercase tracking-tight truncate w-full">{m.homeTeam.name}</span>
-                                                </div>
-
-                                                {/* Score Inputs */}
-                                                <div className="flex flex-col items-center gap-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <input
-                                                            className="w-16 h-16 text-center border-4 border-gray-50 rounded-[1.5rem] bg-gray-50 font-black text-2xl focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-50 outline-none transition-all shadow-inner"
-                                                            type="number"
-                                                            min="0"
-                                                            value={editingScores[m.id]?.h ?? m.homeScore ?? ''}
-                                                            onChange={e => handleScoreChange(m.id, 'h', e.target.value)}
-                                                            placeholder="-"
-                                                        />
-                                                        <span className="text-gray-200 font-black text-2xl">:</span>
-                                                        <input
-                                                            className="w-16 h-16 text-center border-4 border-gray-50 rounded-[1.5rem] bg-gray-50 font-black text-2xl focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-50 outline-none transition-all shadow-inner"
-                                                            type="number"
-                                                            min="0"
-                                                            value={editingScores[m.id]?.a ?? m.awayScore ?? ''}
-                                                            onChange={e => handleScoreChange(m.id, 'a', e.target.value)}
-                                                            placeholder="-"
-                                                        />
-                                                    </div>
-                                                    <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">{new Date(m.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
-                                                </div>
-
-                                                {/* Away Team */}
-                                                <div className="flex-1 flex flex-col items-center gap-3">
-                                                    <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center p-3 border border-gray-100 shadow-inner overflow-hidden">
-                                                        {m.awayTeam.logoUrl ? (
-                                                            <img src={getImageUrl(m.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
-                                                        ) : (
-                                                            <ImageIcon className="text-gray-200" size={24} />
-                                                        )}
-                                                    </div>
-                                                    <span className="text-sm font-black text-gray-800 text-center uppercase tracking-tight truncate w-full">{m.awayTeam.name}</span>
-                                                </div>
-                                            </div>
-
-                                            {/* Surgical Save Button */}
-                                            {editingScores[m.id] && (
-                                                <button
-                                                    onClick={() => saveScore(m.id)}
-                                                    className="w-full mt-6 py-3 bg-primary-600 text-white rounded-2xl font-black text-sm hover:bg-primary-700 flex items-center justify-center transition-all animate-in slide-in-from-bottom-2"
-                                                >
-                                                    <Save size={16} className="mr-2" /> Push Result
-                                                </button>
-                                            )}
+                            return (
+                                <section key={matchday} className="space-y-6">
+                                    <div className="flex items-center gap-4 px-2">
+                                        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-100 to-gray-100"></div>
+                                        <div className="text-center">
+                                            <h3 className="text-lg font-black text-gray-900 uppercase tracking-[0.2em]">
+                                                {dayOfWeek}
+                                            </h3>
+                                            <p className="text-xs font-bold text-gray-400 mt-1">
+                                                Matchday {matchday} • {dateStr}
+                                            </p>
                                         </div>
-                                    ))}
-                                </div>
-                            </section>
-                        ))}
+                                        <div className="h-px flex-1 bg-gradient-to-l from-transparent via-gray-100 to-gray-100"></div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                                        {dayMatches.map((m: any) => (
+                                            <div key={m.id} className="relative group overflow-hidden p-6 bg-white border border-gray-100 rounded-[2rem] shadow-sm hover:shadow-xl hover:shadow-primary-500/5 hover:-translate-y-1 transition-all">
+                                                <div className="flex items-center justify-between gap-6">
+                                                    {/* Home Team */}
+                                                    <div className="flex-1 flex flex-col items-center gap-3">
+                                                        <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center p-3 border border-gray-100 shadow-inner overflow-hidden">
+                                                            {m.homeTeam.logoUrl ? (
+                                                                <img src={getImageUrl(m.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
+                                                            ) : (
+                                                                <ImageIcon className="text-gray-200" size={24} />
+                                                            )}
+                                                        </div>
+                                                        <span className="text-sm font-black text-gray-800 text-center uppercase tracking-tight truncate w-full">{m.homeTeam.name}</span>
+                                                    </div>
+
+                                                    {/* Score Inputs */}
+                                                    <div className="flex flex-col items-center gap-4">
+                                                        <div className="flex items-center gap-3">
+                                                            <input
+                                                                className="w-16 h-16 text-center border-4 border-gray-50 rounded-[1.5rem] bg-gray-50 font-black text-2xl focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-50 outline-none transition-all shadow-inner"
+                                                                type="number"
+                                                                min="0"
+                                                                value={editingScores[m.id]?.h ?? m.homeScore ?? ''}
+                                                                onChange={e => handleScoreChange(m.id, 'h', e.target.value)}
+                                                                placeholder="-"
+                                                            />
+                                                            <span className="text-gray-200 font-black text-2xl">:</span>
+                                                            <input
+                                                                className="w-16 h-16 text-center border-4 border-gray-50 rounded-[1.5rem] bg-gray-50 font-black text-2xl focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-50 outline-none transition-all shadow-inner"
+                                                                type="number"
+                                                                min="0"
+                                                                value={editingScores[m.id]?.a ?? m.awayScore ?? ''}
+                                                                onChange={e => handleScoreChange(m.id, 'a', e.target.value)}
+                                                                placeholder="-"
+                                                            />
+                                                        </div>
+                                                        <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">{new Date(m.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+                                                    </div>
+
+                                                    {/* Away Team */}
+                                                    <div className="flex-1 flex flex-col items-center gap-3">
+                                                        <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center p-3 border border-gray-100 shadow-inner overflow-hidden">
+                                                            {m.awayTeam.logoUrl ? (
+                                                                <img src={getImageUrl(m.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
+                                                            ) : (
+                                                                <ImageIcon className="text-gray-200" size={24} />
+                                                            )}
+                                                        </div>
+                                                        <span className="text-sm font-black text-gray-800 text-center uppercase tracking-tight truncate w-full">{m.awayTeam.name}</span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Surgical Save Button */}
+                                                {editingScores[m.id] && (
+                                                    <button
+                                                        onClick={() => saveScore(m.id)}
+                                                        className="w-full mt-6 py-3 bg-primary-600 text-white rounded-2xl font-black text-sm hover:bg-primary-700 flex items-center justify-center transition-all animate-in slide-in-from-bottom-2"
+                                                    >
+                                                        <Save size={16} className="mr-2" /> Push Result
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            );
+                        })}
 
                         {(!matches || matches.length === 0) && (
                             <div className="py-32 text-center glass rounded-[3rem] border-2 border-dashed border-gray-100">
