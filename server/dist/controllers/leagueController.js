@@ -22,10 +22,10 @@ const getLeagueTable = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 matchesAway: { where: { status: 'PLAYED' } }
             }
         });
-        const table = teams.map(team => {
+        const table = teams.map((team) => {
             let played = 0, won = 0, drawn = 0, lost = 0, gf = 0, ga = 0, pts = 0;
             // Process Home Matches
-            team.matchesHome.forEach(m => {
+            team.matchesHome.forEach((m) => {
                 played++;
                 if (m.homeScore !== null && m.awayScore !== null) {
                     gf += m.homeScore;
@@ -43,7 +43,7 @@ const getLeagueTable = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 }
             });
             // Process Away Matches
-            team.matchesAway.forEach(m => {
+            team.matchesAway.forEach((m) => {
                 played++;
                 if (m.homeScore !== null && m.awayScore !== null) {
                     gf += m.awayScore; // Note: For away team, GF is awayScore
@@ -80,8 +80,12 @@ const getLeagueTable = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.json(table);
     }
     catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error fetching table' });
+        console.error('Table error details:', error);
+        res.status(500).json({
+            message: 'Error fetching table',
+            error: error.message,
+            code: error.code
+        });
     }
 });
 exports.getLeagueTable = getLeagueTable;

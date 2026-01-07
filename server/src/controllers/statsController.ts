@@ -25,7 +25,7 @@ const calculatePlayerRating = (stats: {
 export const recordMatchStats = async (req: Request, res: Response) => {
     try {
         const { matchId } = req.params;
-        const { playerStats } = req.body; // Array of { playerId, goals, assists, yellowCards, redCards, minutesPlayed }
+        const { playerStats } = req.body; // Array of { playerId, goals, assists, yellowCards, redCards, minutesPlayed, isBestPlayer }
 
         if (!Array.isArray(playerStats)) {
             res.status(400).json({
@@ -79,7 +79,8 @@ export const recordMatchStats = async (req: Request, res: Response) => {
                         assists: stat.assists || 0,
                         yellowCards: stat.yellowCards || 0,
                         redCards: stat.redCards || 0,
-                        minutesPlayed: stat.minutesPlayed || null
+                        minutesPlayed: stat.minutesPlayed || null,
+                        isBestPlayer: stat.isBestPlayer || false
                     },
                     create: {
                         playerId: stat.playerId,
@@ -88,7 +89,8 @@ export const recordMatchStats = async (req: Request, res: Response) => {
                         assists: stat.assists || 0,
                         yellowCards: stat.yellowCards || 0,
                         redCards: stat.redCards || 0,
-                        minutesPlayed: stat.minutesPlayed || null
+                        minutesPlayed: stat.minutesPlayed || null,
+                        isBestPlayer: stat.isBestPlayer || false
                     },
                     include: {
                         player: {
@@ -214,9 +216,10 @@ export const getLeagueStats = async (req: Request, res: Response) => {
                     assists: acc.assists + stat.assists,
                     yellowCards: acc.yellowCards + stat.yellowCards,
                     redCards: acc.redCards + stat.redCards,
-                    matchesPlayed: acc.matchesPlayed + 1
+                    matchesPlayed: acc.matchesPlayed + 1,
+                    motmCount: acc.motmCount + (stat.isBestPlayer ? 1 : 0)
                 }),
-                { goals: 0, assists: 0, yellowCards: 0, redCards: 0, matchesPlayed: 0 }
+                { goals: 0, assists: 0, yellowCards: 0, redCards: 0, matchesPlayed: 0, motmCount: 0 }
             );
 
             const rating = calculatePlayerRating(totals);
@@ -237,11 +240,12 @@ export const getLeagueStats = async (req: Request, res: Response) => {
             };
         });
 
-        // Sort by rating (descending), then goals, then assists
+        // Sort priority: MOTM > Goals > Assists > Red Cards (ascending - lower is better)
         playerStats.sort((a, b) => {
-            if (b.rating !== a.rating) return b.rating - a.rating;
+            if (b.motmCount !== a.motmCount) return b.motmCount - a.motmCount;
             if (b.goals !== a.goals) return b.goals - a.goals;
-            return b.assists - a.assists;
+            if (b.assists !== a.assists) return b.assists - a.assists;
+            return a.redCards - b.redCards; // Fewer red cards is better
         });
 
         // Add rank
@@ -280,9 +284,10 @@ export const getTopPerformers = async (req: Request, res: Response) => {
                     assists: acc.assists + stat.assists,
                     yellowCards: acc.yellowCards + stat.yellowCards,
                     redCards: acc.redCards + stat.redCards,
-                    matchesPlayed: acc.matchesPlayed + 1
+                    matchesPlayed: acc.matchesPlayed + 1,
+                    motmCount: acc.motmCount + (stat.isBestPlayer ? 1 : 0)
                 }),
-                { goals: 0, assists: 0, yellowCards: 0, redCards: 0, matchesPlayed: 0 }
+                { goals: 0, assists: 0, yellowCards: 0, redCards: 0, matchesPlayed: 0, motmCount: 0 }
             );
 
             return {
@@ -305,7 +310,11 @@ export const getTopPerformers = async (req: Request, res: Response) => {
             .slice(0, 5);
 
         const bestPlayers = [...playerStats]
-            .sort((a, b) => b.rating - a.rating)
+            .sort((a, b) => {
+                if (b.motmCount !== a.motmCount) return b.motmCount - a.motmCount;
+                if (b.goals !== a.goals) return b.goals - a.goals;
+                return b.assists - a.assists;
+            })
             .slice(0, 5);
 
         res.json({

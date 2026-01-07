@@ -5,7 +5,7 @@ import api, { getImageUrl } from '../lib/api';
 
 export const PlayerStats: React.FC = () => {
     const [teamFilter, setTeamFilter] = useState<string>('all');
-    const [sortBy, setSortBy] = useState<'rating' | 'goals' | 'assists'>('rating');
+    const [sortBy, setSortBy] = useState<'motmCount' | 'goals' | 'assists'>('motmCount');
 
     // Fetch players and stats
     const { data: teams } = useQuery({ queryKey: ['teams'], queryFn: () => api.get('/teams').then(r => r.data) });
@@ -15,9 +15,22 @@ export const PlayerStats: React.FC = () => {
     // Filter and sort stats
     const filteredStats = stats?.filter((p: any) => teamFilter === 'all' || p.team.id === teamFilter)
         .sort((a: any, b: any) => {
-            if (sortBy === 'rating') return b.rating - a.rating;
-            if (sortBy === 'goals') return b.goals - a.goals;
-            if (sortBy === 'assists') return b.assists - a.assists;
+            if (sortBy === 'motmCount') {
+                if (b.motmCount !== a.motmCount) return b.motmCount - a.motmCount;
+                if (b.goals !== a.goals) return b.goals - a.goals;
+                if (b.assists !== a.assists) return b.assists - a.assists;
+                return a.redCards - b.redCards;
+            }
+            if (sortBy === 'goals') {
+                if (b.goals !== a.goals) return b.goals - a.goals;
+                if (b.motmCount !== a.motmCount) return b.motmCount - a.motmCount;
+                return b.assists - a.assists;
+            }
+            if (sortBy === 'assists') {
+                if (b.assists !== a.assists) return b.assists - a.assists;
+                if (b.goals !== a.goals) return b.goals - a.goals;
+                return b.motmCount - a.motmCount;
+            }
             return 0;
         });
 
@@ -108,7 +121,7 @@ export const PlayerStats: React.FC = () => {
                                 <div className="p-3 bg-purple-100 text-purple-600 rounded-2xl">
                                     <Award size={24} />
                                 </div>
-                                <h3 className="text-lg font-black text-gray-800 uppercase tracking-wider">MVP</h3>
+                                <h3 className="text-lg font-black text-gray-800 uppercase tracking-wider">Best Player</h3>
                             </div>
                             {topPerformers.bestPlayers[0] ? (
                                 <div>
@@ -122,7 +135,7 @@ export const PlayerStats: React.FC = () => {
                                         </div>
                                     </div>
                                     <div className="text-4xl font-black text-purple-500">
-                                        {topPerformers.bestPlayers[0].rating} <span className="text-sm text-gray-400 font-medium">RATING</span>
+                                        {topPerformers.bestPlayers[0].motmCount} <span className="text-sm text-gray-400 font-medium">MOTM</span>
                                     </div>
                                 </div>
                             ) : (
@@ -157,10 +170,10 @@ export const PlayerStats: React.FC = () => {
                         {/* Sort Toggle */}
                         <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100">
                             <button
-                                onClick={() => setSortBy('rating')}
-                                className={`px-4 py-1.5 rounded-lg text-xs font-black transition-all ${sortBy === 'rating' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-400 hover:text-gray-600'}`}
+                                onClick={() => setSortBy('motmCount')}
+                                className={`px-4 py-1.5 rounded-lg text-xs font-black transition-all ${sortBy === 'motmCount' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-400 hover:text-gray-600'}`}
                             >
-                                RATING
+                                MOTM
                             </button>
                             <button
                                 onClick={() => setSortBy('goals')}
@@ -185,7 +198,7 @@ export const PlayerStats: React.FC = () => {
                                 <th className="px-2 md:px-8 py-3 md:py-5 text-left text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">Rank</th>
                                 <th className="px-2 md:px-8 py-3 md:py-5 text-left text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">Player</th>
                                 <th className="px-2 md:px-8 py-3 md:py-5 text-left text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">Team</th>
-                                <th className="px-2 md:px-8 py-3 md:py-5 text-center text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">Rat</th>
+                                <th className="px-2 md:px-8 py-3 md:py-5 text-center text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">MOTM</th>
                                 <th className="px-2 md:px-8 py-3 md:py-5 text-center text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">G</th>
                                 <th className="px-2 md:px-8 py-3 md:py-5 text-center text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider">A</th>
                                 <th className="px-2 md:px-8 py-3 md:py-5 text-center text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-wider hidden sm:table-cell">Cards</th>
@@ -225,7 +238,7 @@ export const PlayerStats: React.FC = () => {
                                     </td>
                                     <td className="px-2 md:px-8 py-3 md:py-4 text-center">
                                         <span className="inline-block px-2 py-0.5 md:px-3 md:py-1 rounded-md md:rounded-lg bg-gray-900 text-white font-black text-[10px] md:text-sm shadow-lg shadow-gray-200">
-                                            {player.rating}
+                                            {player.motmCount}
                                         </span>
                                     </td>
                                     <td className="px-2 md:px-8 py-3 md:py-4 text-center font-bold text-xs md:text-sm text-gray-600">{player.goals}</td>

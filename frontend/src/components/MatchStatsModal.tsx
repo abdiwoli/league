@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { X } from 'lucide-react';
+import { Star, X } from 'lucide-react';
 import { Fragment, useEffect, useState } from 'react';
 import api from '../lib/api';
 
@@ -17,6 +17,7 @@ interface PlayerStat {
     yellowCards: number;
     redCards: number;
     minutesPlayed?: number;
+    isBestPlayer: boolean;
 }
 
 export const MatchStatsModal: React.FC<MatchStatsModalProps> = ({ isOpen, onClose, match }) => {
@@ -47,7 +48,8 @@ export const MatchStatsModal: React.FC<MatchStatsModalProps> = ({ isOpen, onClos
                     assists: existing?.assists || 0,
                     yellowCards: existing?.yellowCards || 0,
                     redCards: existing?.redCards || 0,
-                    minutesPlayed: existing?.minutesPlayed || 90
+                    minutesPlayed: existing?.minutesPlayed || 90,
+                    isBestPlayer: existing?.isBestPlayer || false
                 };
             };
 
@@ -71,14 +73,24 @@ export const MatchStatsModal: React.FC<MatchStatsModalProps> = ({ isOpen, onClos
         }
     });
 
-    const updateStat = (playerId: string, field: keyof PlayerStat, value: number) => {
-        setStats(prev => ({
-            ...prev,
-            [playerId]: {
-                ...prev[playerId],
-                [field]: Math.max(0, value)
+    const updateStat = (playerId: string, field: keyof PlayerStat, value: any) => {
+        setStats(prev => {
+            const nextStats = { ...prev };
+
+            // If setting a new MOTM, clear all others
+            if (field === 'isBestPlayer' && value === true) {
+                Object.keys(nextStats).forEach(id => {
+                    nextStats[id] = { ...nextStats[id], isBestPlayer: false };
+                });
             }
-        }));
+
+            nextStats[playerId] = {
+                ...nextStats[playerId],
+                [field]: field === 'isBestPlayer' ? value : Math.max(0, value)
+            };
+
+            return nextStats;
+        });
     };
 
     if (!match) return null;
@@ -158,15 +170,15 @@ export const MatchStatsModal: React.FC<MatchStatsModalProps> = ({ isOpen, onClos
                                                 <div className="col-span-4">Player</div>
                                                 <div className="col-span-2 text-center">Goals</div>
                                                 <div className="col-span-2 text-center">Assists</div>
-                                                <div className="col-span-2 text-center">Cards</div>
-                                                <div className="col-span-2 text-center">Mins</div>
+                                                <div className="col-span-1 text-center">MOTM</div>
+                                                <div className="col-span-2 text-center text-xs">Mins</div>
                                             </div>
 
                                             {currentTeam.players.map((player: any) => {
-                                                const pApps = stats[player.id] || { goals: 0, assists: 0, yellowCards: 0, redCards: 0, minutesPlayed: 90 };
+                                                const pApps = stats[player.id] || { goals: 0, assists: 0, yellowCards: 0, redCards: 0, minutesPlayed: 90, isBestPlayer: false };
                                                 return (
-                                                    <div key={player.id} className="grid grid-cols-12 gap-4 items-center bg-gray-50/50 p-3 rounded-xl border border-gray-100 hover:bg-white hover:shadow-md transition-all">
-                                                        <div className="col-span-4 flex items-center gap-3">
+                                                    <div key={player.id} className="grid grid-cols-12 gap-2 items-center bg-gray-50/50 p-3 rounded-xl border border-gray-100 hover:bg-white hover:shadow-md transition-all">
+                                                        <div className="col-span-3 flex items-center gap-3">
                                                             <div className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center font-bold text-gray-500 text-xs">
                                                                 {player.number}
                                                             </div>
@@ -211,6 +223,17 @@ export const MatchStatsModal: React.FC<MatchStatsModalProps> = ({ isOpen, onClos
                                                             >
                                                                 <div className="w-full h-full bg-red-500 opacity-20" />
                                                             </div>
+                                                        </div>
+
+                                                        {/* MOTM */}
+                                                        <div className="col-span-1 flex justify-center">
+                                                            <button
+                                                                onClick={() => updateStat(player.id, 'isBestPlayer', !pApps.isBestPlayer)}
+                                                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${pApps.isBestPlayer ? 'bg-yellow-100 text-yellow-600 shadow-inner' : 'bg-gray-100 text-gray-300 hover:bg-yellow-50 hover:text-yellow-400'}`}
+                                                                title="Man of the Match"
+                                                            >
+                                                                <Star size={20} fill={pApps.isBestPlayer ? "currentColor" : "none"} />
+                                                            </button>
                                                         </div>
 
                                                         {/* Minutes */}
