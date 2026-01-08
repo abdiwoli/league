@@ -490,6 +490,7 @@ export const MatchList: React.FC = () => {
                                                                     src={getImageUrl(m.homeTeam.logoUrl)!}
                                                                     className="w-full h-full object-contain"
                                                                     alt={m.homeTeam.name}
+                                                                    crossOrigin="anonymous"
                                                                 />
                                                             )}
                                                         </div>
@@ -525,6 +526,7 @@ export const MatchList: React.FC = () => {
                                                                     src={getImageUrl(m.awayTeam.logoUrl)!}
                                                                     className="w-full h-full object-contain"
                                                                     alt={m.awayTeam.name}
+                                                                    crossOrigin="anonymous"
                                                                 />
                                                             )}
                                                         </div>
@@ -544,6 +546,7 @@ export const MatchList: React.FC = () => {
                                                                     src={getImageUrl(m.homeTeam.logoUrl)!}
                                                                     className="w-full h-full object-contain"
                                                                     alt={m.homeTeam.name}
+                                                                    crossOrigin="anonymous"
                                                                 />
                                                             )}
                                                         </div>
@@ -582,6 +585,7 @@ export const MatchList: React.FC = () => {
                                                                     src={getImageUrl(m.awayTeam.logoUrl)!}
                                                                     className="w-full h-full object-contain"
                                                                     alt={m.awayTeam.name}
+                                                                    crossOrigin="anonymous"
                                                                 />
                                                             )}
                                                         </div>
