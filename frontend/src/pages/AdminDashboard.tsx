@@ -412,7 +412,7 @@ export const AdminDashboard: React.FC = () => {
                                     <div key={team.id} className="bg-gray-50/50 rounded-xl p-4 border border-gray-100">
                                         <div className="flex items-center justify-between mb-3">
                                             <h3 className="font-bold text-gray-700 text-sm flex items-center gap-2">
-                                                {team.logoUrl ? <img src={getImageUrl(team.logoUrl)!} className="w-5 h-5 object-contain" /> : null}
+                                                {team.logoUrl ? <img src={getImageUrl(team.logoUrl)!} className="w-6 h-6 object-contain flex-shrink-0" /> : null}
                                                 {team.name}
                                             </h3>
                                             <span className="text-xs font-black bg-white px-2 py-1 rounded-md text-gray-400 border border-gray-100">
@@ -463,7 +463,7 @@ export const AdminDashboard: React.FC = () => {
                                 <div key={t.id} className="flex flex-col p-4 bg-white/50 rounded-2xl border border-gray-50 hover:border-primary-100 transition-all group">
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-[10px] font-black text-gray-400 overflow-hidden">
+                                            <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-[10px] font-black text-gray-400 overflow-hidden flex-shrink-0">
                                                 {t.logoUrl ? <img src={getImageUrl(t.logoUrl)!} alt="" className="w-full h-full object-cover" /> : 'T'}
                                             </div>
                                             {editingTeamId === t.id ? (
@@ -543,7 +543,7 @@ export const AdminDashboard: React.FC = () => {
                                                 <div className="flex items-center justify-between gap-6">
                                                     {/* Home Team */}
                                                     <div className="flex-1 flex flex-col items-center gap-3">
-                                                        <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center p-3 border border-gray-100 shadow-inner overflow-hidden">
+                                                        <div className="w-20 h-20 rounded-2xl bg-gray-50 flex items-center justify-center p-3 border border-gray-100 shadow-inner overflow-hidden flex-shrink-0">
                                                             {m.homeTeam.logoUrl ? (
                                                                 <img src={getImageUrl(m.homeTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
                                                             ) : (
@@ -579,7 +579,7 @@ export const AdminDashboard: React.FC = () => {
 
                                                     {/* Away Team */}
                                                     <div className="flex-1 flex flex-col items-center gap-3">
-                                                        <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center p-3 border border-gray-100 shadow-inner overflow-hidden">
+                                                        <div className="w-20 h-20 rounded-2xl bg-gray-50 flex items-center justify-center p-3 border border-gray-100 shadow-inner overflow-hidden flex-shrink-0">
                                                             {m.awayTeam.logoUrl ? (
                                                                 <img src={getImageUrl(m.awayTeam.logoUrl)!} alt="" className="w-full h-full object-contain" />
                                                             ) : (

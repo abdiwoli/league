@@ -484,7 +484,7 @@ export const MatchList: React.FC = () => {
                                                 <div className="flex md:hidden items-center justify-between gap-3">
                                                     {/* HOME */}
                                                     <div className="flex flex-col items-center gap-1 flex-1">
-                                                        <div className="w-50 h-50 bg-white rounded-lg p-2 border shadow">
+                                                        <div className="w-32 h-32 bg-white rounded-lg p-2 border shadow flex-shrink-0">
                                                             {m.homeTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.homeTeam.logoUrl)!}
@@ -519,7 +519,7 @@ export const MatchList: React.FC = () => {
 
                                                     {/* AWAY */}
                                                     <div className="flex flex-col items-center gap-1 flex-1">
-                                                        <div className="w-50 h-50 bg-white rounded-lg p-2 border shadow">
+                                                        <div className="w-32 h-32 bg-white rounded-lg p-2 border shadow flex-shrink-0">
                                                             {m.awayTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.awayTeam.logoUrl)!}
@@ -537,8 +537,8 @@ export const MatchList: React.FC = () => {
                                                 {/* Desktop: Horizontal Layout */}
                                                 <div className="hidden md:flex items-center justify-between gap-10">
                                                     {/* HOME */}
-                                                    <div className="flex items-center gap-6 w-1/3">
-                                                        <div className="w-28 h-28 lg:w-36 lg:h-36 bg-white rounded-2xl p-3 border shadow">
+                                                    <div className="flex items-center gap-6 w-1/3 min-w-0">
+                                                        <div className="w-32 h-32 lg:w-40 lg:h-40 bg-white rounded-2xl p-3 border shadow flex-shrink-0">
                                                             {m.homeTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.homeTeam.logoUrl)!}
@@ -547,7 +547,7 @@ export const MatchList: React.FC = () => {
                                                                 />
                                                             )}
                                                         </div>
-                                                        <div className="text-2xl lg:text-3xl font-black">
+                                                        <div className="text-2xl lg:text-3xl font-black truncate">
                                                             {m.homeTeam.name}
                                                         </div>
                                                     </div>
@@ -572,11 +572,11 @@ export const MatchList: React.FC = () => {
                                                     </div>
 
                                                     {/* AWAY */}
-                                                    <div className="flex items-center gap-6 w-1/3 justify-end">
-                                                        <div className="text-2xl lg:text-3xl font-black text-right">
+                                                    <div className="flex items-center gap-6 w-1/3 justify-end min-w-0">
+                                                        <div className="text-2xl lg:text-3xl font-black text-right truncate">
                                                             {m.awayTeam.name}
                                                         </div>
-                                                        <div className="w-28 h-28 lg:w-36 lg:h-36 bg-white rounded-2xl p-3 border shadow">
+                                                        <div className="w-32 h-32 lg:w-40 lg:h-40 bg-white rounded-2xl p-3 border shadow flex-shrink-0">
                                                             {m.awayTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.awayTeam.logoUrl)!}
