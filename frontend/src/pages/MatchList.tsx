@@ -475,16 +475,16 @@ export const MatchList: React.FC = () => {
                           w-full
                           bg-gradient-to-r from-white via-slate-50 to-white
                           border-2 border-slate-300
-                          rounded-2xl md:rounded-[2.5rem]
-                          p-4 md:p-6 lg:p-10
-                          shadow-lg md:shadow-xl
+                          rounded-2xl md:rounded-[2rem]
+                          p-4 md:p-6 lg:p-6
+                          shadow-md md:shadow-lg
                         "
                                             >
                                                 {/* Mobile: Horizontal Compact */}
                                                 <div className="flex md:hidden items-center justify-between gap-3">
                                                     {/* HOME */}
                                                     <div className="flex flex-col items-center gap-1 flex-1">
-                                                        <div className="w-50 h-50 bg-white rounded-lg p-2 border shadow flex-shrink-0">
+                                                        <div className="w-14 h-14 bg-white rounded-lg p-1.5 border shadow flex-shrink-0">
                                                             {m.homeTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.homeTeam.logoUrl)!}
@@ -494,7 +494,7 @@ export const MatchList: React.FC = () => {
                                                                 />
                                                             )}
                                                         </div>
-                                                        <div className="text-xs font-black text-center break-words w-full">
+                                                        <div className="text-[10px] font-black text-center break-words w-full leading-tight">
                                                             {m.homeTeam.name}
                                                         </div>
                                                     </div>
@@ -520,7 +520,7 @@ export const MatchList: React.FC = () => {
 
                                                     {/* AWAY */}
                                                     <div className="flex flex-col items-center gap-1 flex-1">
-                                                        <div className="w-50 h-50 bg-white rounded-lg p-2 border shadow flex-shrink-0">
+                                                        <div className="w-14 h-14 bg-white rounded-lg p-1.5 border shadow flex-shrink-0">
                                                             {m.awayTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.awayTeam.logoUrl)!}
@@ -530,7 +530,7 @@ export const MatchList: React.FC = () => {
                                                                 />
                                                             )}
                                                         </div>
-                                                        <div className="text-xs font-black text-center break-words w-full">
+                                                        <div className="text-[10px] font-black text-center break-words w-full leading-tight">
                                                             {m.awayTeam.name}
                                                         </div>
                                                     </div>
@@ -539,8 +539,8 @@ export const MatchList: React.FC = () => {
                                                 {/* Desktop: Horizontal Layout */}
                                                 <div className="hidden md:flex items-center justify-between gap-10">
                                                     {/* HOME */}
-                                                    <div className="flex flex-col items-center gap-0 w-1/3">
-                                                        <div className="w-32 h-32 lg:w-100 lg:h-100 bg-white rounded-2xl p-3 border shadow flex-shrink-0">
+                                                    <div className="flex flex-col items-center gap-2 w-1/3">
+                                                        <div className="w-20 h-20 lg:w-24 lg:h-24 bg-white rounded-2xl p-2 border shadow flex-shrink-0">
                                                             {m.homeTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.homeTeam.logoUrl)!}
@@ -550,7 +550,7 @@ export const MatchList: React.FC = () => {
                                                                 />
                                                             )}
                                                         </div>
-                                                        <div className="text-xl lg:text-2xl font-black text-center">
+                                                        <div className="text-lg lg:text-xl font-black text-center">
                                                             {m.homeTeam.name}
                                                         </div>
                                                     </div>
@@ -559,7 +559,7 @@ export const MatchList: React.FC = () => {
                                                     <div className="flex flex-col items-center w-1/3">
                                                         {m.status === 'PLAYED' ? (
                                                             <>
-                                                                <div className="bg-gray-900 text-white text-3xl font-black px-6 py-3 rounded-2xl">
+                                                                <div className="bg-gray-900 text-white text-xl md:text-2xl font-black px-4 py-2 rounded-xl">
                                                                     {m.homeScore} – {m.awayScore}
                                                                 </div>
                                                                 <div className="flex items-center gap-1 text-green-600 text-xs mt-2 font-bold">
@@ -575,8 +575,8 @@ export const MatchList: React.FC = () => {
                                                     </div>
 
                                                     {/* AWAY */}
-                                                    <div className="flex flex-col items-center gap-4 w-1/3">
-                                                        <div className="w-32 h-32 lg:w-40 lg:h-40 bg-white rounded-2xl p-3 border shadow flex-shrink-0">
+                                                    <div className="flex flex-col items-center gap-2 w-1/3">
+                                                        <div className="w-20 h-20 lg:w-24 lg:h-24 bg-white rounded-2xl p-2 border shadow flex-shrink-0">
                                                             {m.awayTeam.logoUrl && (
                                                                 <img
                                                                     src={getImageUrl(m.awayTeam.logoUrl)!}
@@ -586,7 +586,7 @@ export const MatchList: React.FC = () => {
                                                                 />
                                                             )}
                                                         </div>
-                                                        <div className="text-xl lg:text-2xl font-black text-center">
+                                                        <div className="text-lg lg:text-xl font-black text-center">
                                                             {m.awayTeam.name}
                                                         </div>
                                                     </div>

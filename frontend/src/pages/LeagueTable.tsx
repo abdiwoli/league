@@ -45,9 +45,9 @@ export const LeagueTable: React.FC = () => {
                                     "hover:bg-gray-50/50 transition-all group",
                                     idx === 0 && "bg-gradient-to-r from-yellow-50/30 to-transparent"
                                 )}>
-                                    <td className="px-2 md:px-8 py-4 md:py-10">
+                                    <td className="px-2 md:px-8 py-4 md:py-6">
                                         <div className={clsx(
-                                            "w-6 h-6 md:w-16 md:h-16 rounded-lg md:rounded-2xl flex items-center justify-center text-xs md:text-2xl font-black shadow-sm transition-transform group-hover:scale-110",
+                                            "w-6 h-6 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center text-xs md:text-xl font-black shadow-sm transition-transform group-hover:scale-110",
                                             idx === 0 ? "bg-yellow-100 text-yellow-700" :
                                                 idx === 1 ? "bg-gray-100 text-gray-700" :
                                                     idx === 2 ? "bg-orange-50 text-orange-700" : "bg-white border md:border-2 border-gray-100 text-gray-400"
@@ -55,41 +55,41 @@ export const LeagueTable: React.FC = () => {
                                             {idx + 1}
                                         </div>
                                     </td>
-                                    <td className="px-2 md:px-8 py-4 md:py-10">
-                                        <div className="flex items-center gap-2 md:gap-8">
+                                    <td className="px-2 md:px-8 py-4 md:py-6">
+                                        <div className="flex items-center gap-2 md:gap-4">
                                             <div className="relative flex-shrink-0">
                                                 {team.logoUrl ? (
-                                                    <img src={getImageUrl(team.logoUrl)!} className="w-12 h-12 md:w-24 md:h-24 object-contain drop-shadow-sm md:drop-shadow-lg transition-transform group-hover:scale-105 duration-300" crossOrigin="anonymous" />
+                                                    <img src={getImageUrl(team.logoUrl)!} className="w-10 h-10 md:w-14 md:h-14 object-contain drop-shadow-sm transition-transform group-hover:scale-105 duration-300" crossOrigin="anonymous" />
                                                 ) : (
-                                                    <div className="w-12 h-12 md:w-24 md:h-24 rounded-lg md:rounded-3xl bg-primary-50 text-primary-300 flex items-center justify-center font-black text-xs md:text-5xl">
+                                                    <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg md:rounded-2xl bg-primary-50 text-primary-300 flex items-center justify-center font-black text-xs md:text-2xl">
                                                         {team.name.substring(0, 1).toUpperCase()}
                                                     </div>
                                                 )}
                                                 {idx === 0 && (
-                                                    <div className="absolute -top-1 -right-1 md:-top-3 md:-right-3 bg-yellow-400 text-white p-0.5 md:p-2 rounded-full shadow-lg">
-                                                        <Trophy className="w-3 h-3 md:w-5 md:h-5" fill="currentColor" />
+                                                    <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 bg-yellow-400 text-white p-0.5 md:p-1.5 rounded-full shadow-lg">
+                                                        <Trophy className="w-3 h-3 md:w-4 md:h-4" fill="currentColor" />
                                                     </div>
                                                 )}
                                             </div>
-                                            <span className="font-black text-sm md:text-4xl text-gray-900 tracking-tight truncate max-w-[100px] md:max-w-none">{team.name}</span>
+                                            <span className="font-black text-sm md:text-xl text-gray-900 tracking-tight truncate max-w-[100px] md:max-w-none">{team.name}</span>
                                         </div>
                                     </td>
-                                    <td className="px-1 md:px-6 py-4 md:py-10 text-center text-xs md:text-2xl text-gray-400 font-bold">{team.played}</td>
-                                    <td className="px-1 md:px-6 py-4 md:py-10 text-center text-xs md:text-2xl text-gray-900 font-black">{team.won}</td>
-                                    <td className="px-1 md:px-6 py-4 md:py-10 text-center text-xs md:text-2xl text-gray-400 font-bold hidden sm:table-cell">{team.drawn}</td>
-                                    <td className="px-1 md:px-6 py-4 md:py-10 text-center text-xs md:text-2xl text-gray-400 font-bold hidden sm:table-cell">{team.lost}</td>
-                                    <td className="px-1 md:px-6 py-4 md:py-10 text-center text-xs text-gray-400 font-bold hidden xl:table-cell">{team.gf}</td>
-                                    <td className="px-1 md:px-6 py-4 md:py-10 text-center text-xs text-gray-400 font-bold hidden xl:table-cell">{team.ga}</td>
-                                    <td className="px-1 md:px-6 py-4 md:py-10 text-center">
+                                    <td className="px-1 md:px-6 py-4 md:py-6 text-center text-xs md:text-lg text-gray-400 font-bold">{team.played}</td>
+                                    <td className="px-1 md:px-6 py-4 md:py-6 text-center text-xs md:text-lg text-gray-900 font-black">{team.won}</td>
+                                    <td className="px-1 md:px-6 py-4 md:py-6 text-center text-xs md:text-lg text-gray-400 font-bold hidden sm:table-cell">{team.drawn}</td>
+                                    <td className="px-1 md:px-6 py-4 md:py-6 text-center text-xs md:text-lg text-gray-400 font-bold hidden sm:table-cell">{team.lost}</td>
+                                    <td className="px-1 md:px-6 py-4 md:py-6 text-center text-xs text-gray-400 font-bold hidden xl:table-cell">{team.gf}</td>
+                                    <td className="px-1 md:px-6 py-4 md:py-6 text-center text-xs text-gray-400 font-bold hidden xl:table-cell">{team.ga}</td>
+                                    <td className="px-1 md:px-6 py-4 md:py-6 text-center">
                                         <span className={clsx(
-                                            "px-1.5 py-0.5 md:px-4 md:py-2 rounded md:rounded-xl text-[10px] md:text-xl font-black",
+                                            "px-1.5 py-0.5 md:px-3 md:py-1 rounded md:rounded-lg text-[10px] md:text-lg font-black",
                                             team.gd > 0 ? "bg-green-100 text-green-700" :
                                                 team.gd < 0 ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-500"
                                         )}>
                                             {team.gd > 0 ? '+' : ''}{team.gd}
                                         </span>
                                     </td>
-                                    <td className="px-2 md:px-8 py-4 md:py-10 text-center font-black text-lg md:text-6xl text-primary-600">
+                                    <td className="px-2 md:px-8 py-4 md:py-6 text-center font-black text-lg md:text-3xl text-primary-600">
                                         {team.pts}
                                     </td>
                                 </tr>
