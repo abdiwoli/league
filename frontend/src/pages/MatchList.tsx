@@ -205,7 +205,10 @@ export const MatchList: React.FC = () => {
                 return m;
             });
 
-            result.push(...balanced);
+            // 3. Final Sort by Date to ensure Jan 17 stays before Jan 18
+            const chronologicallySorted = [...balanced].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+            result.push(...chronologicallySorted);
         });
 
         return result;
