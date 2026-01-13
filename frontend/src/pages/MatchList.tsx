@@ -144,8 +144,67 @@ export const MatchList: React.FC = () => {
     }
 
     /* ---------------- Group matches ---------------- */
+    const processedMatches = useMemo(() => {
+        if (!matches) return [];
+
+        const rounds: Record<number, any[]> = {};
+        matches.forEach((m: any) => {
+            if (!rounds[m.round]) rounds[m.round] = [];
+            rounds[m.round].push(m);
+        });
+
+        const result: any[] = [];
+        Object.entries(rounds).forEach(([rStr, roundMatches]) => {
+            const roundNum = parseInt(rStr);
+
+            // Skip Round 1
+            if (roundNum <= 1) {
+                result.push(...roundMatches);
+                return;
+            }
+
+            // 1. Deterministic Shuffle using roundNum as seed
+            const shuffled = [...roundMatches];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.abs(Math.sin(roundNum * 10 + i)) * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+
+            // 2. Intra-day Home/Away balancing
+            const homeCountsByDay: Record<string, Record<string, number>> = {};
+            const balanced = shuffled.map(m => {
+                const dateKey = format(parseISO(m.date), 'yyyy-MM-dd');
+                if (!homeCountsByDay[dateKey]) homeCountsByDay[dateKey] = {};
+                const dayCounts = homeCountsByDay[dateKey];
+
+                const homeId = m.homeTeam.id;
+                const awayId = m.awayTeam.id;
+
+                // If Home team already played Home on this day, and Away team has not... SWAP
+                if ((dayCounts[homeId] || 0) > 0 && !(dayCounts[awayId] || 0)) {
+                    dayCounts[awayId] = (dayCounts[awayId] || 0) + 1;
+                    return {
+                        ...m,
+                        homeTeam: m.awayTeam,
+                        awayTeam: m.homeTeam,
+                        homeScore: m.awayScore,
+                        awayScore: m.homeScore,
+                        _isSwapped: true
+                    };
+                }
+
+                dayCounts[homeId] = (dayCounts[homeId] || 0) + 1;
+                return m;
+            });
+
+            result.push(...balanced);
+        });
+
+        return result;
+    }, [matches]);
+
     const roundsMap: Record<number, Record<string, any[]>> = {};
-    matches?.forEach((m: any) => {
+    processedMatches.forEach((m: any) => {
         if (!roundsMap[m.round]) roundsMap[m.round] = {};
         const dateKey = format(parseISO(m.date), 'yyyy-MM-dd');
         if (!roundsMap[m.round][dateKey]) roundsMap[m.round][dateKey] = [];
