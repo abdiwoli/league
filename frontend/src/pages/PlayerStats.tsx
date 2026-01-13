@@ -11,25 +11,36 @@ export const PlayerStats: React.FC = () => {
     const { data: teams } = useQuery({ queryKey: ['teams'], queryFn: () => api.get('/teams').then(r => r.data) });
     const { data: stats } = useQuery({ queryKey: ['league-stats'], queryFn: () => api.get('/stats/league').then(r => r.data) });
     const { data: topPerformers } = useQuery({ queryKey: ['top-performers'], queryFn: () => api.get('/stats/top-performers').then(r => r.data) });
+    const { data: table } = useQuery({ queryKey: ['league-table'], queryFn: () => api.get('/table').then(r => r.data) });
+
+    // Helper to get team rank
+    const getTeamRank = (teamId: string) => {
+        if (!table) return 999;
+        const index = table.findIndex((t: any) => t.id === teamId);
+        return index === -1 ? 999 : index;
+    };
 
     // Filter and sort stats
     const filteredStats = stats?.filter((p: any) => teamFilter === 'all' || p.team.id === teamFilter)
         .sort((a: any, b: any) => {
+            const rankA = getTeamRank(a.team.id);
+            const rankB = getTeamRank(b.team.id);
+
             if (sortBy === 'motmCount') {
                 if (b.motmCount !== a.motmCount) return b.motmCount - a.motmCount;
+                if (rankA !== rankB) return rankA - rankB; // Lower index = Higher rank
                 if (b.goals !== a.goals) return b.goals - a.goals;
-                if (b.assists !== a.assists) return b.assists - a.assists;
                 return a.redCards - b.redCards;
             }
             if (sortBy === 'goals') {
                 if (b.goals !== a.goals) return b.goals - a.goals;
-                if (b.motmCount !== a.motmCount) return b.motmCount - a.motmCount;
-                return b.assists - a.assists;
+                if (rankA !== rankB) return rankA - rankB;
+                return b.motmCount - a.motmCount;
             }
             if (sortBy === 'assists') {
                 if (b.assists !== a.assists) return b.assists - a.assists;
-                if (b.goals !== a.goals) return b.goals - a.goals;
-                return b.motmCount - a.motmCount;
+                if (rankA !== rankB) return rankA - rankB;
+                return b.goals - a.goals;
             }
             return 0;
         });

@@ -25,6 +25,9 @@ export const AdminDashboard: React.FC = () => {
     const [statsModalOpen, setStatsModalOpen] = useState(false);
     const [selectedMatch, setSelectedMatch] = useState<any>(null);
 
+    // Filtering State
+    const [filterMatchday, setFilterMatchday] = useState<string>('all');
+
     // Queries
     const { data: teams } = useQuery({ queryKey: ['teams'], queryFn: () => api.get('/teams').then(r => r.data) });
     const { data: matches } = useQuery({ queryKey: ['matches'], queryFn: () => api.get('/matches').then(r => r.data) });
@@ -191,11 +194,15 @@ export const AdminDashboard: React.FC = () => {
         }
     };
 
-    // Group matches by Matchday
+    // Group matches by Matchday, then filter if needed
     const groupedMatches = matches?.reduce((acc: any, m: any) => {
+        if (filterMatchday !== 'all' && m.matchday.toString() !== filterMatchday) return acc;
         (acc[m.matchday] = acc[m.matchday] || []).push(m);
         return acc;
     }, {});
+
+    const matchdays = (matches ? [...new Set(matches.map((m: any) => m.matchday.toString()))] : []) as string[];
+    matchdays.sort((a, b) => parseInt(a) - parseInt(b));
 
     return (
         <div className="space-y-10 pb-20 max-w-7xl mx-auto px-4">
@@ -509,9 +516,26 @@ export const AdminDashboard: React.FC = () => {
                             <span className="w-2 h-8 bg-primary-500 rounded-full mr-3"></span>
                             Result Entry
                         </h2>
-                        <div className="text-xs font-black px-4 py-2 bg-primary-50 text-primary-600 rounded-full border border-primary-100 flex items-center">
-                            <RefreshCw size={12} className="mr-2 animate-spin-slow" />
-                            {matches?.filter((m: any) => m.status === 'SCHEDULED')?.length || 0} Open Fixtures
+                        <div className="flex items-center gap-4">
+                            {/* Matchday Filter */}
+                            <div className="flex items-center gap-2 bg-white border-2 border-gray-100 rounded-xl px-3 py-1.5 shadow-sm">
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Filter:</span>
+                                <select
+                                    value={filterMatchday}
+                                    onChange={(e) => setFilterMatchday(e.target.value)}
+                                    className="text-xs font-black text-primary-600 outline-none bg-transparent cursor-pointer"
+                                >
+                                    <option value="all">All Matchdays</option>
+                                    {matchdays.map((md: string) => (
+                                        <option key={md} value={md}>Matchday {md}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="text-xs font-black px-4 py-2 bg-primary-50 text-primary-600 rounded-full border border-primary-100 flex items-center">
+                                <RefreshCw size={12} className="mr-2 animate-spin-slow" />
+                                {matches?.filter((m: any) => m.status === 'SCHEDULED')?.length || 0} Open
+                            </div>
                         </div>
                     </div>
 
