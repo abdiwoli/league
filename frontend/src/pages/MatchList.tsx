@@ -155,26 +155,40 @@ export const MatchList: React.FC = () => {
                 return;
             }
 
-            // 1. Deterministic Shuffle using roundNum as seed
+            // 1. Improved Deterministic Shuffle using roundNum as seed
             const shuffled = [...roundMatches];
+            const seed = roundNum * 1337 + 42;
             for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.abs(Math.sin(roundNum * 10 + i)) * (i + 1));
+                const j = Math.floor(Math.abs(Math.sin(seed + i)) * (i + 1));
                 [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
 
-            // 2. Intra-day Home/Away balancing
-            const homeCountsByDay: Record<string, Record<string, number>> = {};
+            // 2. "True Balancing" - Minimize net Home/Away difference per team per day
+            const netHomeByDay: Record<string, Record<string, number>> = {};
             const balanced = shuffled.map(m => {
                 const dateKey = format(parseISO(m.date), 'yyyy-MM-dd');
-                if (!homeCountsByDay[dateKey]) homeCountsByDay[dateKey] = {};
-                const dayCounts = homeCountsByDay[dateKey];
+                if (!netHomeByDay[dateKey]) netHomeByDay[dateKey] = {};
+                const dayNets = netHomeByDay[dateKey];
 
-                const homeId = m.homeTeam.id;
-                const awayId = m.awayTeam.id;
+                const teamA = m.homeTeam.id;
+                const teamB = m.awayTeam.id;
 
-                // If Home team already played Home on this day, and Away team has not... SWAP
-                if ((dayCounts[homeId] || 0) > 0 && !(dayCounts[awayId] || 0)) {
-                    dayCounts[awayId] = (dayCounts[awayId] || 0) + 1;
+                // Current imbalance for these two teams
+                const currentNetA = dayNets[teamA] || 0;
+                const currentNetB = dayNets[teamB] || 0;
+
+                // Option 1: A is Home (+1), B is Away (-1)
+                // New nets: (currentNetA + 1) and (currentNetB - 1)
+                const penalty1 = Math.abs(currentNetA + 1) + Math.abs(currentNetB - 1);
+
+                // Option 2: B is Home (+1), A is Away (-1)
+                // New nets: (currentNetA - 1) and (currentNetB + 1)
+                const penalty2 = Math.abs(currentNetA - 1) + Math.abs(currentNetB + 1);
+
+                if (penalty2 < penalty1) {
+                    // Swap to keep balance
+                    dayNets[teamA] = currentNetA - 1;
+                    dayNets[teamB] = currentNetB + 1;
                     return {
                         ...m,
                         homeTeam: m.awayTeam,
@@ -185,7 +199,9 @@ export const MatchList: React.FC = () => {
                     };
                 }
 
-                dayCounts[homeId] = (dayCounts[homeId] || 0) + 1;
+                // Keep original
+                dayNets[teamA] = currentNetA + 1;
+                dayNets[teamB] = currentNetB - 1;
                 return m;
             });
 
