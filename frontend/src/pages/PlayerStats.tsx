@@ -60,9 +60,6 @@ export const PlayerStats: React.FC = () => {
                             {topPerformers.topScorers[0] ? (
                                 <div>
                                     <div className="flex items-center gap-4 mb-2">
-                                        <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center font-black text-gray-400">
-                                            {topPerformers.topScorers[0].number}
-                                        </div>
                                         <div>
                                             <p className="text-2xl font-black text-gray-900">{topPerformers.topScorers[0].name}</p>
                                             <p className="text-sm font-bold text-gray-400">{topPerformers.topScorers[0].team.name}</p>
@@ -93,9 +90,6 @@ export const PlayerStats: React.FC = () => {
                             {topPerformers.topAssisters[0] ? (
                                 <div>
                                     <div className="flex items-center gap-4 mb-2">
-                                        <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center font-black text-gray-400">
-                                            {topPerformers.topAssisters[0].number}
-                                        </div>
                                         <div>
                                             <p className="text-2xl font-black text-gray-900">{topPerformers.topAssisters[0].name}</p>
                                             <p className="text-sm font-bold text-gray-400">{topPerformers.topAssisters[0].team.name}</p>
@@ -126,9 +120,6 @@ export const PlayerStats: React.FC = () => {
                             {topPerformers.bestPlayers[0] ? (
                                 <div>
                                     <div className="flex items-center gap-4 mb-2">
-                                        <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center font-black text-gray-400">
-                                            {topPerformers.bestPlayers[0].number}
-                                        </div>
                                         <div>
                                             <p className="text-2xl font-black text-gray-900">{topPerformers.bestPlayers[0].name}</p>
                                             <p className="text-sm font-bold text-gray-400">{topPerformers.bestPlayers[0].team.name}</p>
@@ -219,12 +210,8 @@ export const PlayerStats: React.FC = () => {
                                     </td>
                                     <td className="px-2 md:px-8 py-3 md:py-4">
                                         <div className="flex items-center gap-2 md:gap-3">
-                                            <div className="hidden sm:flex w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gray-100 items-center justify-center font-black text-gray-400 group-hover:bg-white group-hover:shadow-md transition-all">
-                                                {player.number}
-                                            </div>
                                             <div>
-                                                <p className="font-bold text-xs md:text-sm text-gray-900 truncate max-w-[80px] sm:max-w-none">{player.name}</p>
-                                                <p className="text-[10px] md:text-xs text-gray-400 font-medium sm:hidden">#{player.number}</p>
+                                                <p className="font-extrabold text-sm md:text-base text-gray-900 truncate max-w-[150px] sm:max-w-none">{player.name}</p>
                                             </div>
                                         </div>
                                     </td>
