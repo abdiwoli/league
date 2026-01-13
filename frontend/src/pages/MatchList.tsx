@@ -135,14 +135,6 @@ export const MatchList: React.FC = () => {
         return preview;
     }, [teams, mode, rounds, startDate, daysBetweenRounds, matchDaysPerRound]);
 
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center h-96">
-                <RefreshCw className="animate-spin text-primary-500" size={36} />
-            </div>
-        );
-    }
-
     /* ---------------- Group matches ---------------- */
     const processedMatches = useMemo(() => {
         if (!matches) return [];
@@ -202,6 +194,14 @@ export const MatchList: React.FC = () => {
 
         return result;
     }, [matches]);
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-96">
+                <RefreshCw className="animate-spin text-primary-500" size={36} />
+            </div>
+        );
+    }
 
     const roundsMap: Record<number, Record<string, any[]>> = {};
     processedMatches.forEach((m: any) => {
