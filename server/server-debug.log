@@ -188,3 +188,19 @@ The table `public.Team` does not exist in the current database.
 [2026-01-22T04:42:34.922Z] Fetched 3 teams
 [2026-01-22T04:42:34.936Z] Fetching teams...
 [2026-01-22T04:42:35.161Z] Fetched 3 teams
+[2026-01-22T04:46:44.967Z] Fetching teams...
+[2026-01-22T04:46:46.092Z] Fetched 3 teams
+[2026-01-22T04:47:13.909Z] Fetching teams...
+[2026-01-22T04:47:14.562Z] Fetched 3 teams
+[2026-01-22T04:55:32.995Z] Fetching teams...
+[2026-01-22T04:55:38.024Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+Can't reach database server at `ep-young-heart-ahrj6kln-pooler.c-3.us-east-1.aws.neon.tech:5432`
+
+Please make sure your database server is running at `ep-young-heart-ahrj6kln-pooler.c-3.us-east-1.aws.neon.tech:5432`.
