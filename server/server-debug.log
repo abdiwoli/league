@@ -10,3 +10,181 @@ C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\co
 Can't reach database server at `localhost:5432`
 
 Please make sure your database server is running at `localhost:5432`.
+[2026-01-22T04:25:42.571Z] Fetching teams...
+[2026-01-22T04:25:45.227Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:25:46.248Z] Fetching teams...
+[2026-01-22T04:25:46.561Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:25:48.580Z] Fetching teams...
+[2026-01-22T04:25:48.909Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:25:52.927Z] Fetching teams...
+[2026-01-22T04:25:53.217Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:26:36.478Z] Fetching teams...
+[2026-01-22T04:26:37.582Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:26:38.595Z] Fetching teams...
+[2026-01-22T04:26:38.943Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:26:40.980Z] Fetching teams...
+[2026-01-22T04:26:41.851Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:26:45.888Z] Fetching teams...
+[2026-01-22T04:26:46.257Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:27:52.245Z] Fetching teams...
+[2026-01-22T04:27:52.802Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:27:53.845Z] Fetching teams...
+[2026-01-22T04:27:54.129Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:27:56.160Z] Fetching teams...
+[2026-01-22T04:27:56.597Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:28:00.634Z] Fetching teams...
+[2026-01-22T04:28:00.945Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:28:01.217Z] Fetching teams...
+[2026-01-22T04:28:01.514Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:28:02.545Z] Fetching teams...
+[2026-01-22T04:28:03.047Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:28:05.097Z] Fetching teams...
+[2026-01-22T04:28:05.391Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:28:09.416Z] Fetching teams...
+[2026-01-22T04:28:09.973Z] Error fetching teams: 
+Invalid `prisma.team.findMany()` invocation in
+C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\controllers\teamController.ts:17:41
+
+  14 export const getTeams = async (req: Request, res: Response) => {
+  15     try {
+  16         logToFile('Fetching teams...');
+→ 17         const teams = await prisma.team.findMany(
+The table `public.Team` does not exist in the current database.
+[2026-01-22T04:33:51.328Z] Fetching teams...
+[2026-01-22T04:33:54.932Z] Fetched 3 teams
+[2026-01-22T04:34:28.119Z] Fetching teams...
+[2026-01-22T04:34:28.756Z] Fetched 3 teams
+[2026-01-22T04:34:46.012Z] Fetching teams...
+[2026-01-22T04:34:46.476Z] Fetched 3 teams
+[2026-01-22T04:34:57.199Z] Fetching teams...
+[2026-01-22T04:34:57.639Z] Fetched 3 teams
+[2026-01-22T04:35:52.850Z] Fetching teams...
+[2026-01-22T04:35:53.435Z] Fetched 3 teams
+[2026-01-22T04:42:29.004Z] Fetching teams...
+[2026-01-22T04:42:29.289Z] Fetching teams...
+[2026-01-22T04:42:34.355Z] Fetched 3 teams
+[2026-01-22T04:42:34.360Z] Fetched 3 teams
+[2026-01-22T04:42:34.375Z] Fetching teams...
+[2026-01-22T04:42:34.922Z] Fetched 3 teams
+[2026-01-22T04:42:34.936Z] Fetching teams...
+[2026-01-22T04:42:35.161Z] Fetched 3 teams

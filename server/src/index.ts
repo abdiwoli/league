@@ -67,4 +67,5 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-// Trigger deployment: 2026-01-07 01:54
+// Export for Vercel
+export default app;
