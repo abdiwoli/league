@@ -204,3 +204,7 @@ C:\Users\wali7\.gemini\antigravity\scratch\football-league-manager\server\src\co
 Can't reach database server at `ep-young-heart-ahrj6kln-pooler.c-3.us-east-1.aws.neon.tech:5432`
 
 Please make sure your database server is running at `ep-young-heart-ahrj6kln-pooler.c-3.us-east-1.aws.neon.tech:5432`.
+[2026-01-22T05:19:15.304Z] Fetching teams...
+[2026-01-22T05:19:18.177Z] Fetched 3 teams
+[2026-01-22T05:20:05.703Z] Fetching teams...
+[2026-01-22T05:20:06.411Z] Fetched 3 teams
